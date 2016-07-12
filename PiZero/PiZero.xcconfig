@@ -1,0 +1,40 @@
+//
+//  PiZero.xcconfig
+//  PiZero
+//
+//  Created by Maurik Holtrop on 5/20/16.
+//  Copyright © 2016 Maurik. All rights reserved.
+//
+
+PRODUCT_NAME=PiZero
+DSTROOT=/Users/maurik/Documents/Analysis/HPS_Analysis
+
+// ======= ROOT 6 ==============
+ROOTSYS=/Users/maurik/root/root.git
+ROOTLIBS=-L${ROOTSYS}/lib -lCore -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -lProof -lpthread -stdlib=libc++ -lm -ldl
+CLANG_CXX_LANGUAGE_STANDARD = c++11
+
+HPSDST=${DSTROOT}/hps-dst
+BASEANA=${DSTROOT}/BaseAna
+
+HEADER_SEARCH_PATHS=${ROOTSYS}/include ${HPSDST}/include/hps_event ${BASEANA}/BaseAna
+LIBRARY_SEARCH_PATHS=${ROOTSYS}/lib 
+
+PREBINDING = NO;
+GCC_WARN_ABOUT_RETURN_TYPE = YES;
+GCC_WARN_UNUSED_VARIABLE = YES;
+
+GCC_INLINES_ARE_PRIVATE_EXTERN=NO
+GCC_SYMBOLS_PRIVATE_EXTERN = NO
+
+EXECUTABLE_EXTENSION = dylib
+LD_DYLIB_INSTALL_NAME = $(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_NAME)
+EXECUTABLE_PREFIX=lib
+
+OTHER_LDFLAGS= ${ROOTLIBS}
+// -L${HPSDST}/Release -lHpsEvent
+OTHER_CPLUSPLUSFLAGS = -pthreads -fPIC -stdlib=libc++
+
+DEPLOYMENT_LOCATION = YES
+DEPLOYMENT_POSTPROCESSING = YES
+

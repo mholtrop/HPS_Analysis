@@ -1,0 +1,11 @@
+//
+//  TestPiZero.xcconfig
+//  PiZero
+//
+//  Created by Maurik Holtrop on 7/11/16.
+//  Copyright © 2016 Maurik. All rights reserved.
+//
+#include "PiZero.xcconfig"
+PRODUCT_NAME=TestPiZero
+EXECUTABLE_PREFIX=
+INSTALL_PATH=/bin

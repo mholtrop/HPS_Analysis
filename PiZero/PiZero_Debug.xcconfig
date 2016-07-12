@@ -1,0 +1,12 @@
+//
+//  PiZero_Debug.xcconfig
+//  PiZero
+//
+//  Created by Maurik Holtrop on 5/20/16.
+//  Copyright © 2016 Maurik. All rights reserved.
+//
+
+#include "PiZero.xcconfig"
+INSTALL_PATH=/Debug
+DYLIB_INSTALL_NAME_BASE=${DSTROOT}/${INSTALL_PATH}
+OTHER_LDFLAGS= ${ROOTLIBS} -L${DSTROOT}/Debug

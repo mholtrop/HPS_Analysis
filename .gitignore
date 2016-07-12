@@ -1,0 +1,33 @@
+**/xcuserdata/**
+# Compiled Sources 
+bin/
+lib/
+.obj/
+*.o
+*.so
+
+# Build Directory 
+build/
+
+# LCIO and ROOT files  
+*.lcio
+*.slcio
+*.root
+
+# Temp files 
+*~
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+
+# Eclipse project description file 
+.project
+
+# Pydev project file
+.pydevproject
+
+# Sandbox directory
+sandbox/
+
+# pdf
+*.pdf
+

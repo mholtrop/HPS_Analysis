@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:BaseAna/BaseAna.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:hps-dst/src/HpsEvent/HpsEvent.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:PiZero/PiZero.xcodeproj">
+   </FileRef>
+</Workspace>
