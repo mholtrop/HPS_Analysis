@@ -94,6 +94,7 @@ void BaseAna::Init(TTree *tree)
         }
       }else{
         fChain_type=kIs_TTree;
+        Notify();
         if(fDebug & kDebug_Info) cout << "            -- TREE type chain. \n";
       }
       
