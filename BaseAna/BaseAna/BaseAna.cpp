@@ -89,6 +89,7 @@ void BaseAna::Init(TTree *tree)
           if(fDebug & kDebug_Info) cout << "            -- CHAIN::Process type chain. \n";
         }else{
           fChain_type=kIs_TChain;
+          Notify();
           if(fDebug & kDebug_Info) cout << "            -- CHAIN type chain. \n";
           fChain->GetEntry(0);
         }
