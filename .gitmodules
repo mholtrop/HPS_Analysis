@@ -1,0 +1,3 @@
+[submodule "hps-dst"]
+	path = hps-dst
+	url = https://github.com/mholtrop/hps-dst.git
