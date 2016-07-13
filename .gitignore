@@ -1,10 +1,15 @@
-**/xcuserdata/**
 # Compiled Sources 
 bin/
 lib/
 .obj/
 *.o
 *.so
+
+# XCode stuff
+**/xcuserdata/**
+**/xcshareddata/**
+Release/**
+Debug/**
 
 # Build Directory 
 build/
