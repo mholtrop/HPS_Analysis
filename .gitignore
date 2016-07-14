@@ -5,14 +5,27 @@ lib/
 *.o
 *.so
 
-# XCode stuff
-**/xcuserdata/**
-**/xcshareddata/**
-Release/**
-Debug/**
+# XCode files that change by user
+Release
+Debug
+build
 
-# Build Directory 
-build/
+# XCode files to ingnore
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.xcworkspace
+!default.xcworkspace
+xcuserdata
+profile
+*.moved-aside
+DerivedData
+.idea/
 
 # LCIO and ROOT files  
 *.lcio
