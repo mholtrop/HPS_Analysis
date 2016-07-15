@@ -8,7 +8,9 @@
 # minimum is not met, cmake will fail.
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
-cmake_policy(SET CMP0042 NEW)
+if( CMAKE_VERSION VERSION_GREATER 3.0)
+    cmake_policy(SET CMP0042 NEW)
+endif()
 
 # Set the name of the project
 project(HPS_ANALYSIS)
@@ -44,12 +46,17 @@ endforeach()
 
 if( NOT DEFINED ENV{ROOTSYS} ) 
     message( FATAL_ERROR  "You need to setup ROOT first. ")
+else()
+    message("Using ROOT from $ENV{ROOTSYS} ")
 endif()
 
-list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
+list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS} )
 
 #---Locate the ROOT package and defines a number of variables (e.g. ROOT_INCLUDE_DIRS)
-find_package(ROOT)
+find_package(ROOT REQUIRED)
+
+message("Got the FindROOT.cmake from: ${ROOT_DIR} ")
+message("We have ROOT_USE_FILE: ${ROOT_USE_FILE} ")
 
 #---Overwrite some of the ROOT_DEFINITIONS since these are way too pedantic.
 set(ROOT_DEFINITIONS "")

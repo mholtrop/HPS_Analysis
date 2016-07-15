@@ -9,7 +9,7 @@ message("Creating the ${PROJECT_NAME} project")
 SET(PROJECT_HEADER_FILES BaseAna.h)
 SET(PROJECT_HEADER_LINKDEF_FILES BaseAna_LinkDef.h)
 SET(PROJECT_CXX_FILES  BaseAna.cpp)
-SET(PROJECT_EXTRA_LIBS ${HPS_DST_LIB_DIR}/libHpsEvent.dylib )
+SET(PROJECT_EXTRA_LIBS ${HPS_DST_LIB_DIR}/libHpsEvent${CMAKE_SHARED_LIBRARY_SUFFIX} )
 
 
 #--- Below this line, you should not need to specify project specific things.
@@ -23,7 +23,7 @@ add_library(${PROJECT_NAME} SHARED ${PROJECT_CXX_FILES} ${PROJECT_NAME}Dict.cxx)
 target_link_libraries(${PROJECT_NAME} ${ROOT_LIBRARIES} ${PROJECT_EXTRA_LIBS})
 
 install(TARGETS ${PROJECT_NAME}  DESTINATION ${INSTALL_LIB_DIR})
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${PROJECT_NAME}Dict_rdict.pcm  DESTINATION ${INSTALL_LIB_DIR})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Dict_rdict.pcm  DESTINATION ${INSTALL_LIB_DIR})
 
 # Expose BaseAna public includes to other
 # subprojects through cache variable.
