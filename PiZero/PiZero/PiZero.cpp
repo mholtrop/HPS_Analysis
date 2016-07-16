@@ -56,6 +56,8 @@ PiZero::PiZero(TTree *tree): BaseAna(tree) {
   pizero_mass=nullptr;
   pizero_theta=nullptr;
   
+  output_file_name = "PiZero_out.root";
+  
 }
 
 PiZero::~PiZero(){
@@ -114,33 +116,22 @@ void PiZero::SlaveBegin(TTree *tree)
   evt_count = 0;
   
   // Initialize the histograms
-  cluster_count = new TH1F("cluster_count","Cluster Count",21,0,21);
-  fOutput->Add(cluster_count);
-  cluster_no_track_count = new TH1F("cluster_no_track_count","No Track Cluster count",21,0,21);
-  fOutput->Add(cluster_no_track_count);
-  track_count = new TH1F("track_count","Cluster Count",21,0,21);
-  fOutput->Add(track_count);
-  particle_count = new TH1F("particle_count","Particle Count",21,0,21);
-  fOutput->Add(particle_count);
-  particle_count_bsc_v0 = new TH1F("particle_count_bsc_v0","Particle Count",21,0,21);
-  fOutput->Add(particle_count_bsc_v0);
-  particle_count_tc_v0 = new TH1F("particle_count_tc_v0","Particle Count",21,0,21);
-  fOutput->Add(particle_count_tc_v0);
   
-  neutrals_count = new TH1F("neutrals_count","Neutrals Count",21,0,21);
-  fOutput->Add(neutrals_count);
+  fOutput->Add(cluster_count = new TH1F("cluster_count","Cluster Count",21,0,21));
+  fOutput->Add(cluster_no_track_count = new TH1F("cluster_no_track_count","No Track Cluster count",21,0,21));
+  fOutput->Add(track_count = new TH1F("track_count","Cluster Count",21,0,21));
+  fOutput->Add(particle_count = new TH1F("particle_count","Particle Count",21,0,21));
+  fOutput->Add(particle_count_bsc_v0 = new TH1F("particle_count_bsc_v0","Particle Count",21,0,21));
 
-  photon_count = new TH1F("photon_count","Photon Count",21,0,21);
-  fOutput->Add(photon_count);
+  fOutput->Add(particle_count_tc_v0 = new TH1F("particle_count_tc_v0","Particle Count",21,0,21));
+  fOutput->Add(neutrals_count = new TH1F("neutrals_count","Neutrals Count",21,0,21));
 
-  photon_energy = new TH1F("photon_energy","Photon Energy",300,0.,1.5);
-  fOutput->Add(photon_energy);
-  
-  photon_thetaphi = new TH2F("photon_thetaphi","Photon phi vs theta",100,0.,0.1,100,-TMath::Pi(),+TMath::Pi());
-  photon_xy = new TH2F("photon_xy","Photon Y vs X",350,-330,370,180,-90,90);
-  
-  pizero_mass  = new TH1F("pizero_mass","Two Photon Invariant Mass",600,0.,0.3);
-  pizero_theta = new TH1F("pizero_theta","Two Photon Angle",500,0.,0.5);
+  fOutput->Add(photon_count = new TH1F("photon_count","Photon Count",21,0,21));
+  fOutput->Add(photon_energy = new TH1F("photon_energy","Photon Energy",300,0.,1.5));
+  fOutput->Add(photon_thetaphi = new TH2F("photon_thetaphi","Photon phi vs theta",100,0.,0.1,100,-TMath::Pi(),+TMath::Pi()));
+  fOutput->Add(photon_xy = new TH2F("photon_xy","Photon Y vs X",350,-330,370,180,-90,90));
+  fOutput->Add(pizero_mass  = new TH1F("pizero_mass","Two Photon Invariant Mass",600,0.,0.3));
+  fOutput->Add(pizero_theta = new TH1F("pizero_theta","Two Photon Angle",500,0.,0.5));
   
 }
 

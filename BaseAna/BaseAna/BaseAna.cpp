@@ -29,7 +29,7 @@
 
 ClassImp(BaseAna);
 
-BaseAna::BaseAna(TTree *tree): fChain(NULL), event(NULL), b_event(NULL), fDebug(kDebug_Info+kDebug_Warning+kDebug_Error),is_process(false){
+BaseAna::BaseAna(TTree *tree): fChain(NULL), event(NULL), b_event(NULL), is_process(false), fDebug(kDebug_Info+kDebug_Warning+kDebug_Error){
   // Constructor. If tree is passed, initialize with that tree.
 
   if(tree){
@@ -50,6 +50,8 @@ BaseAna::BaseAna(TTree *tree): fChain(NULL), event(NULL), b_event(NULL), fDebug(
 //  }else{
 //    if(fDebug & kDebug_Info) cout << "Running outside of PROOF\n";
 //  }
+
+  output_file_name = "BaseAna_out.root";
 
 }
 
@@ -238,9 +240,9 @@ Bool_t BaseAna::Process(Long64_t entry)
     Abort("Bad event");
     return false;
   }
-//  if( (evt_count++ % 1 ) == 0) {
+  if( (evt_count++ % 1000 ) == 0) {
     printf("i: %9ld  event: %9d  clust: %2d  track: %2d  tree: %2d\n", evt_count, event->getEventNumber(), event->getNumberOfEcalClusters(), event->getNumberOfTracks(),fChain->GetTreeNumber());
-//  }
+  }
   return(kTRUE);
 }
 
@@ -269,13 +271,13 @@ void BaseAna::Terminate()
   cout << list->GetEntries() << endl;
   
   // Write the contends to a file, but skip the first three objects.
-  if(fDebug & kDebug_L1) cout << "Writing output file\n";
-  TFile f("tmp_baseana_hists.root","RECREATE");
+  if(fDebug & kDebug_L1) cout << "Writing output file: " << output_file_name << endl;
+  TFile file_out(output_file_name.data(),"RECREATE");
   for(int i=0;i<list->GetEntries();++i){
     
     list->At(i)->Write();
   }
-  f.Close();
+  file_out.Close();
   
 }
 

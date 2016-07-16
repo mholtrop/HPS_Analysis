@@ -38,7 +38,16 @@ public:
   Int_t   fDebug;
   
   bool    is_process;
- 
+
+  HpsEvent *event;   // Stores the HpsEvent
+  TBranch  *b_event; // Branch to HpsEvent
+  
+  long    current_event; // Current event in file
+  long    evt_count;     // Current sequence number for event.
+
+  string  output_file_name;
+
+  
   enum Debug_codes {
     kDebug_Quiet   = 0x00,
     kDebug_Error   = 0x01,
@@ -59,12 +68,6 @@ public:
   
   static const int ecal_nx=23;
   static const int ecal_ny=5;
-  
-  HpsEvent *event;
-  TBranch  *b_event;
-  
-  long    current_event;
-  long    evt_count;
   
 public:
   BaseAna(TTree *tree=NULL);
