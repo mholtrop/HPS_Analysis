@@ -25,7 +25,7 @@ using namespace std;
 #include <TSelector.h>
 #include <TH1F.h>
 #include <TH2F.h>
-#include <TGAxis.h>
+#include <TGaxis.h>
 #include <TCanvas.h>
 
 #include "HpsEvent.h"
