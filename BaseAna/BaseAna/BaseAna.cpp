@@ -29,7 +29,7 @@
 
 ClassImp(BaseAna);
 
-BaseAna::BaseAna(TTree *tree): fChain(NULL), event(NULL), b_event(NULL), is_process(false), fDebug(kDebug_Info+kDebug_Warning+kDebug_Error){
+BaseAna::BaseAna(TTree *tree): fChain(NULL),fDebug(kDebug_Info+kDebug_Warning+kDebug_Error), is_process(false), event(NULL), b_event(NULL){
   // Constructor. If tree is passed, initialize with that tree.
 
   if(tree){
@@ -166,7 +166,7 @@ void BaseAna::Begin(TTree *tree)
   cout << endl;
 }
 
-void BaseAna::SlaveBegin(TTree *tree)
+void BaseAna::SlaveBegin(TTree */*tree */)
 {
   // The SlaveBegin() function is called after the Begin() function when processing a chain.
   // When running with PROOF SlaveBegin() is called on each slave server, but Begin is NOT called on each slave,
@@ -293,7 +293,7 @@ int BaseAna::Run(int nevent){
   return(current_event);
 }
 
-void BaseAna::Print(Option_t *option){
+void BaseAna::Print(Option_t *option) const{
   
   char evt_time[71];
   time_t evt_time_n;
@@ -307,6 +307,7 @@ void BaseAna::Print(Option_t *option){
     evt_time_n = evt_time_raw/1000000000;
     evt_time_frac =evt_time_raw%1000000000;
   }else{
+    evt_time_n = 0;
     evt_time_raw = event->getEventTime();
     evt_time_frac=0;
   }
@@ -421,13 +422,14 @@ HpsParticle    *BaseAna::GetParticle(int n){
 }
 
 void BaseAna::DrawEcal(int n){
-  // Draw a representation of the ECAL witht he hits for the current event.
+  // Draw a representation of the ECAL with he hits for the current event.
+  // Argument n=2 sets the line width.
   //
   TH2F *hit_map = EcalHitMap();
   TH2F *clusters =ClusterMap();
   
   FancyPlot(hit_map,0);
-  clusters->SetLineWidth(2);
+  clusters->SetLineWidth(n);
   clusters->Draw("box same");
   clusters->Draw("text same)");
   
@@ -481,7 +483,7 @@ TH2F *BaseAna::ClusterMap(int n_cl){
   for(int nc=(n_cl==0?0:n_cl-1);nc<(n_cl!=0?n_cl:event->getNumberOfEcalClusters());++nc){
     if(gDebug ) cout << "Histo for ECAL Cluster" << nc << endl;
     EcalCluster *clus=event->getEcalCluster(nc);
-    EcalHit *seed = clus->getSeed();
+    // EcalHit *seed = clus->getSeed();
     TRefArray *r_hits = clus->getEcalHits();
     for(int nh=0;nh<r_hits->GetEntries();++nh){
       EcalHit *hit=(EcalHit *)r_hits->At(nh);

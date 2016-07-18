@@ -72,10 +72,10 @@ public:
 public:
   BaseAna(TTree *tree=NULL);
   virtual ~BaseAna();
-  virtual Int_t Version() const { return 1; }
+  virtual Int_t Version(void) const { return 1; }
 
   virtual void    Begin(TTree *tree);
-  virtual void    SlaveBegin(TTree *tree);
+  virtual void    SlaveBegin(TTree */* tree */);
   virtual void    Init(TTree *tree);
   virtual Bool_t  Notify();
   virtual Bool_t  Process(Long64_t entry);
@@ -84,32 +84,32 @@ public:
   virtual void    SetOption(const char *option) { fOption = option; };
   virtual void    SetObject(TObject *obj) { fObject = obj; };
   virtual void    SetInputList(TList *input) { fInput = input; };
-  virtual TList  *GetOutputList() const { return fOutput; }
+  virtual TList  *GetOutputList() const{ return fOutput; };
   virtual void    SlaveTerminate();
   virtual void    Terminate();
 
 // Debug Manipulators:
-  virtual void    SetDebugLevel(int level){ fDebug = level;};
-  virtual void    SetDebugLevelBit(int level){ fDebug = fDebug | level;};
-  virtual void    ClearDebugLevelBit(int level){ fDebug = fDebug & ~level;};
+  virtual void    SetDebugLevel(const int level){ fDebug = level;};
+  virtual void    SetDebugLevelBit(const int level){ fDebug = fDebug | level;};
+  virtual void    ClearDebugLevelBit(const int level){ fDebug = fDebug & ~level;};
   virtual void    SetDebugLevelVerbose(void){ fDebug = kDebug_Error +kDebug_Warning +kDebug_Info;};
   virtual int     GetDebugLevel(void){ return fDebug; };
 
   
 // Useful extra methods not needed for PROOF
   virtual int             Run(int nevent=0);
-  virtual void            Print(Option_t *opt="");
+  virtual void            Print(Option_t *opt="") const;
   virtual HpsEvent       *GetEvent(){return event;};
   virtual HpsParticle    *GetParticle(int n);
   
-  void            SetOutputFileName(string outfile){output_file_name=outfile;};
+  void            SetOutputFileName(const string& outfile){output_file_name=outfile;};
   string          GetOutputFileName(void){return(output_file_name);};
 
-  void            DrawEcal(int n=0);
+  void            DrawEcal(int n=2);
   TH2F           *EcalHitMap(void);
   TH2F           *ClusterMap(int n_cl=0);
   void            FancyPlot(TH2F *histo,int opt);
-  int             TrXhit(int x){ return (x>=0?x:x+1); };
+  inline int      TrXhit(const int x) const{ return (x>=0?x:x+1); };
   
   ClassDef(BaseAna,0);
 };

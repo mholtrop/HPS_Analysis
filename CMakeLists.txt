@@ -1,4 +1,3 @@
-#
 #	@author: Maurik Holtrop <maurik@physics.unh.edu>
 #	@date: July 14, 2016
 #
@@ -22,25 +21,20 @@ set(HPS_ANALYSIS_VERSION_MINOR 1)
 
 # Offer the user the choice of overriding the installation directories
 
-set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
-set(INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
-set(INSTALL_INCLUDE_DIR include CACHE PATH  "Installation directory for header files")
-
 IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT) 
-        SET(CMAKE_INSTALL_PREFIX ${HPS_ANALYSIS_SOURCE_DIR} CACHE PATH "HPS_Analysis install prefix, default is project top dir." FORCE) 
+        SET(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR} CACHE PATH "HPS_Analysis install prefix, default is project top dir." FORCE) 
 ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT) 
 
 message("The installation prefix is set to:  ${CMAKE_INSTALL_PREFIX} ")   
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin" CACHE PATH "Build location of binary executatbles.")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib" CACHE PATH "Build location of shared libraries.")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib" CACHE PATH "Build location of static libraries.")
+
+set(CMAKE_INSTALL_LIBDIR           "${CMAKE_INSTALL_PREFIX}/lib" CACHE PATH "Installation location of libraries. ")
+set(CMAKE_INSTALL_BINDIR           "${CMAKE_INSTALL_PREFIX}/bin" CACHE PATH "Installation location of binaries. ")
+
  
-# Make relative paths absolute (needed later on)
-foreach(p LIB BIN INCLUDE CMAKE)
-  set(var INSTALL_${p}_DIR)
-  if(NOT IS_ABSOLUTE "${${var}}")
-    set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
-  endif()
-endforeach()
-
-
 # You need to tell CMake where to find the ROOT installation. This can be done in a number of ways:
 #   - ROOT built with classic configure/make use the provided $ROOTSYS/etc/cmake/FindROOT.cmake
 #   - ROOT built with CMake. Add in CMAKE_PREFIX_PATH the installation prefix for ROOT
@@ -61,15 +55,9 @@ message("We have ROOT_USE_FILE: ${ROOT_USE_FILE} ")
 
 #---Overwrite some of the ROOT_DEFINITIONS since these are way too pedantic.
 set(ROOT_DEFINITIONS "")
-message("ROOT_DEFINITIONS = ${ROOT_DEFINITIONS} ")
 
 #---Define useful ROOT functions and macros (e.g. ROOT_GENERATE_DICTIONARY)
 include(${ROOT_USE_FILE})
-
-message("ROOT_DEFINITIONS = ${ROOT_DEFINITIONS}")
-message("ROOT_CXX_FLAGS = ${ROOT_CXX_FLAGS}")
-message("CMAKE_CXX_FLAGS = ${CMAKE_CXX_FLAGS}")
-message("CMAKE_C_FLAGS = ${CMAKE_C_FLAGS}")
 
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -83,27 +71,30 @@ include_directories("${HPS_DST_ROOT_DIR}/include/utils")
 set(HPS_DST_LIB_DIR "${HPS_DST_ROOT_DIR}/lib" CACHE PATH "Location of the libraries for hps-dst.")
 
 
-# use, i.e. don't skip the full RPATH for the build tree
-SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+if(APPLE_NOT)
+  # use, i.e. don't skip the full RPATH for the build tree
+  SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
 
-# when building, don't use the install RPATH already
-# (but later on when installing)
-SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+  # when building, don't use the install RPATH already
+  # (but later on when installing)
+  SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
 
-SET(CMAKE_INSTALL_RPATH "${INSTALL_LIB_DIR}")
+  SET(CMAKE_INSTALL_RPATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 
-# add the automatically determined parts of the RPATH
-# which point to directories outside the build tree to the install RPATH
-SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+  # add the automatically determined parts of the RPATH
+  # which point to directories outside the build tree to the install RPATH
+  SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-# the RPATH to be used when installing, but only if it's not a system directory
-LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${INSTALL_LIB_DIR}" isSystemDir)
-IF("${isSystemDir}" STREQUAL "-1")
-   SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-   message("CMAKE_INSTALL_RPATH set to ${CMAKE_INSTALL_RPATH} ")
+  # the RPATH to be used when installing, but only if it's not a system directory
+  LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}" isSystemDir)
+  IF("${isSystemDir}" STREQUAL "-1")
+    SET(CMAKE_INSTALL_RPATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+    message("CMAKE_INSTALL_RPATH set to ${CMAKE_INSTALL_RPATH} ")
+    
+  ENDIF("${isSystemDir}" STREQUAL "-1")
+endif(APPLE_NOT)
 
-ENDIF("${isSystemDir}" STREQUAL "-1")
-
+add_subdirectory(hps-dst)
 
 include_directories(${CMAKE_SOURCE_DIR}/BaseAna/BaseAna)
 add_subdirectory(BaseAna/BaseAna)
