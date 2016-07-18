@@ -101,6 +101,9 @@ public:
   virtual void            Print(Option_t *opt="");
   virtual HpsEvent       *GetEvent(){return event;};
   virtual HpsParticle    *GetParticle(int n);
+  
+  void            SetOutputFileName(string outfile){output_file_name=outfile;};
+  string          GetOutputFileName(void){return(output_file_name);};
 
   void            DrawEcal(int n=0);
   TH2F           *EcalHitMap(void);

@@ -290,6 +290,7 @@ int BaseAna::Run(int nevent){
   while(current_event+1 < max_event && stat>0){
     stat=Next();
   }
+  return(current_event);
 }
 
 void BaseAna::Print(Option_t *option){

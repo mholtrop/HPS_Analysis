@@ -7,6 +7,7 @@
 # Specify the minimum CMake version required.  If the cmake version 
 # minimum is not met, cmake will fail.
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
+cmake_policy(SET CMP0005 NEW)
 
 if( CMAKE_VERSION VERSION_GREATER 3.0)
     cmake_policy(SET CMP0042 NEW)
@@ -60,6 +61,7 @@ message("We have ROOT_USE_FILE: ${ROOT_USE_FILE} ")
 
 #---Overwrite some of the ROOT_DEFINITIONS since these are way too pedantic.
 set(ROOT_DEFINITIONS "")
+message("ROOT_DEFINITIONS = ${ROOT_DEFINITIONS} ")
 
 #---Define useful ROOT functions and macros (e.g. ROOT_GENERATE_DICTIONARY)
 include(${ROOT_USE_FILE})
@@ -103,7 +105,8 @@ IF("${isSystemDir}" STREQUAL "-1")
 ENDIF("${isSystemDir}" STREQUAL "-1")
 
 
-
+include_directories(${CMAKE_SOURCE_DIR}/BaseAna/BaseAna)
 add_subdirectory(BaseAna/BaseAna)
-add_subdirectory(PiZero/PiZero)
 
+include_directories(${CMAKE_SOURCE_DIR}/PiZero/PiZero)
+add_subdirectory(PiZero/PiZero)

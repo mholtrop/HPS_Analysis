@@ -13,6 +13,5 @@
 #pragma link C++ nestedclasses;
 
 #pragma link C++ class PiZero+;
-#pragma link C++ class NTest+;
 
 #endif

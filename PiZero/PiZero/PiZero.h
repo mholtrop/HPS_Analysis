@@ -64,8 +64,8 @@ public:
   virtual void    SlaveBegin(TTree *tree);
 // virtual void    Init(TTree *tree); // No need to override.
   virtual Bool_t  Process(Long64_t entry);
-  virtual void    SlaveTerminate();
-  virtual void    Terminate();
+//  virtual void    SlaveTerminate(); // No need to override.
+//  virtual void    Terminate();      // No need to override.
   
 //  virtual void    Print(Option_t *option="");
   
