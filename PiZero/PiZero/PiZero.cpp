@@ -56,7 +56,7 @@ PiZero::PiZero(TTree *tree): BaseAna(tree) {
   pizero_mass=nullptr;
   pizero_theta=nullptr;
   
-  output_file_name = "PiZero_out.root";
+  SetOutputFileName("PiZero_out.root");
   
 }
 
@@ -230,35 +230,3 @@ Bool_t PiZero::Process(Long64_t entry)
   
   return kTRUE;
 }
-
-void PiZero::SlaveTerminate()
-{
-  // The SlaveTerminate() function is called after all entries or objects
-  // have been processed. When running with PROOF SlaveTerminate() is called
-  // on each slave server.
-  if(fDebug & kDebug_Info) cout << "Slave Terminate \n";
-}
-
-void PiZero::Terminate()
-{
-  // The Terminate() function is the last function to be called during
-  // a query. It always runs on the client, it can be used to present
-  // the results graphically or save the results to file.
-  
-  if(fDebug & kDebug_Info) cout << "Terminate \n";
-//  cluster_count = dynamic_cast<TH1F*>(fOutput->FindObject("cluster_count"));
-//  TCanvas *c1=new TCanvas("c1","C",800,600);
-//  cluster_count->Draw();
-  TList *list=GetOutputList();
-  cout << list->GetEntries() << endl;
-  
-  // Write the contends to a file, but skip the first three objects.
-  if(fDebug & kDebug_Info) cout << "Writing output file\n";
-  TFile f("tmp_hists.root","RECREATE");
-  for(int i=0;i<list->GetEntries();++i){
-    
-    list->At(i)->Write();
-  }
-  f.Close();
-}
-
