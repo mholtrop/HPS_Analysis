@@ -48,7 +48,7 @@ endif()
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS} )
 
 #---Locate the ROOT package and defines a number of variables (e.g. ROOT_INCLUDE_DIRS)
-find_package(ROOT REQUIRED)
+find_package(ROOT REQUIRED COMPONENTS MathCore RIO Hist Tree Net)
 
 message("Got the FindROOT.cmake from: ${ROOT_DIR} ")
 message("We have ROOT_USE_FILE: ${ROOT_USE_FILE} ")
