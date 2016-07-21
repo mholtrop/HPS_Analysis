@@ -13,5 +13,7 @@
 #pragma link C++ nestedclasses;
 
 #pragma link C++ class BaseAna+;
+#pragma link C++ class FEESelector+;
+#pragma link C++ class Counter+;
 
 #endif

@@ -47,6 +47,23 @@ PiZero::PiZero(TTree *tree): BaseAna(tree) {
   particle_count_bsc_v0=nullptr;
   particle_count_tc_v0=nullptr;
   neutrals_count=nullptr;
+  electron_count=nullptr;
+  positron_count=nullptr;
+  
+  cluster_energy=nullptr;
+  cluster_fee_energy=nullptr;
+  
+  cluster_fee_matched_energy=nullptr;
+  
+  cluster_loc=nullptr;
+  cluster_fee_loc=nullptr;
+  cluster_fee_matched_loc=nullptr;
+
+  cluster_track_match_xy=nullptr;
+  cluster_track_match_dr=nullptr;
+  
+  cluster_fee_track_match_xy=nullptr;
+  cluster_fee_track_match_dr=nullptr;
   
   photon_count = nullptr;
   photon_energy = nullptr;
@@ -125,7 +142,24 @@ void PiZero::SlaveBegin(TTree *tree)
 
   fOutput->Add(particle_count_tc_v0 = new TH1F("particle_count_tc_v0","Particle Count",21,0,21));
   fOutput->Add(neutrals_count = new TH1F("neutrals_count","Neutrals Count",21,0,21));
+  fOutput->Add(electron_count = new TH1F("electron_count","Electron Count",21,0,21));
+  fOutput->Add(positron_count = new TH1F("positron_count","Positron Count",21,0,21));
 
+  fOutput->Add(cluster_energy = new TH1F("cluster_energy","Cluster Energy",1500,0.,1.5));
+  fOutput->Add(cluster_fee_energy = new TH1F("cluster_fee_energy","Cluster Energy for FEE",1500,0.,1.5));
+  
+  fOutput->Add(cluster_fee_matched_energy= new TH1F("cluster_fee_matched_energy","Cluter Energy for FEE, mom - energy match",1500,0.,1.5));
+
+  fOutput->Add(cluster_loc = new TH2F("cluster_loc","Cluster location",350,-330,370,180,-90,90));
+  fOutput->Add(cluster_fee_loc = new TH2F("cluster_fee_loc","Cluster location, FEE",350,-330,370,180,-90,90));
+  fOutput->Add(cluster_fee_matched_loc = new TH2F("cluster_fee_matched_loc","Cluster location, FEE matched",350,-330,370,180,-90,90));
+
+  fOutput->Add(cluster_track_match_xy = new TH2F("cluster_track_match_xy","Cluster - Track match location, dx ,dy",600,-30,30,600,-30,30));
+  fOutput->Add(cluster_track_match_dr = new TH1F("cluster_track_match_dr","Cluster - Track match location, dr",1000,-50,50));
+  
+  fOutput->Add(cluster_fee_track_match_xy = new TH2F("cluster_fee_track_match_xy","Cluster - Track match location, dx ,dy",600,-30,30,600,-30,30));
+  fOutput->Add(cluster_fee_track_match_dr = new TH1F("cluster_fee_track_match_dr","Cluster - Track match location, dr",1000,-50,50));
+  
   fOutput->Add(photon_count = new TH1F("photon_count","Photon Count",21,0,21));
   fOutput->Add(photon_energy = new TH1F("photon_energy","Photon Energy",300,0.,1.5));
   fOutput->Add(photon_thetaphi = new TH2F("photon_thetaphi","Photon phi vs theta",100,0.,0.1,100,-TMath::Pi(),+TMath::Pi()));
@@ -169,12 +203,23 @@ Bool_t PiZero::Process(Long64_t entry)
     printf("i: %9ld  event: %9d  clust: %2d  track: %2d  tree: %2d\n", evt_count, event->getEventNumber(), event->getNumberOfEcalClusters(), event->getNumberOfTracks(),fChain->GetTreeNumber());
   }
   
+  if( ! (event->isSvtBiasOn() && event->isSvtClosed() && event->isSvtLatencyGood()) ){
+    if(fDebug & kDebug_L1) cout << "Event skipped for bad SVT status \n";
+    return(kTRUE);
+  }
+  
+  
   if(cluster_count == nullptr){
     cout << "ERROR -- I was not properly initialized. \n";
   }
   
   int n_clusters=event->getNumberOfEcalClusters();
   cluster_count->Fill(n_clusters);
+
+  for( int iclus=0;iclus < n_clusters; ++iclus){
+    EcalCluster *clus= event->getEcalCluster(iclus);
+    cluster_energy->Fill(clus->getEnergy());
+  }
   
   int n_tracks=event->getNumberOfTracks();
   track_count->Fill(n_tracks);
@@ -188,18 +233,59 @@ Bool_t PiZero::Process(Long64_t entry)
   const int n_particles_tc_v0=event->getNumberOfParticles(HpsParticle::TC_V0_CANDIDATE);
   particle_count_tc_v0->Fill(n_particles_tc_v0);
   
-  int neutrals=0;
+  int n_neutrals=0;
+  int n_electrons=0;
+  int n_positrons=0;
+  
   vector<HpsParticle *> photons;
   for(int np=0;np<n_particles;++np){
-    HpsParticle *part = event->getParticle(HpsParticle::FINAL_STATE_PARTICLE,np);
+    HpsParticle *part = GetParticle(np);   //event->getParticle(HpsParticle::FINAL_STATE_PARTICLE,np);
+    
+    if( part->getCharge() == 0) ++n_neutrals;
+
     int PDGtype = part->getPDG();
     if( PDGtype == 22){        // Yup it's a photon -- To Do: More stringent photon tests here?
       photons.push_back(part); // So put it on our list.
+    }else if (PDGtype == 11){
+      ++n_electrons;
+      
+      if(GetAbsMomentum(part) > 0.8 && part->getGoodnessOfPID()<20.){
+        TRefArray *clus_ref = part->getClusters();
+        if(clus_ref &&  clus_ref->GetEntries() > 0){
+          if( clus_ref->GetEntries() > 1 ){
+            cout << "WOA -- This electron has more than one cluster? "<< np << " \n";
+            Print("all");
+          }
+          EcalCluster *clus= (EcalCluster *)clus_ref->At(0);
+          if(abs(clus->getEnergy() - part->getEnergy() ) > 0.01 ){
+            cout << "Hum --- Cluster and particle energies differ by more than 10 MeV np="<< np << "\n";
+            Print("all");
+          }
+          
+          
+          
+          
+          
+          
+          
+        }else{
+          cout << "ERR --- Electron without a cluster ref np="<<np << " \n";
+          Print("all");
+        }
+        
+        
+        cluster_fee_energy->Fill(part->getEnergy());
+      }
+      
+    }else if (PDGtype == -11){
+      ++n_positrons;
     }
-    if( part->getCharge() == 0) ++neutrals;
   }
   
-  neutrals_count->Fill(neutrals);
+  neutrals_count->Fill(n_neutrals);
+  electron_count->Fill(n_electrons);
+  positron_count->Fill(n_positrons);
+  
   int n_photons=photons.size();
   photon_count->Fill(n_photons);
   

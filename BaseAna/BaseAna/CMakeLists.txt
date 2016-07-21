@@ -6,9 +6,9 @@ project(BaseAna)
 
 message("Creating the ${PROJECT_NAME} project")
 
-SET(PROJECT_HEADER_FILES BaseAna.h)
+SET(PROJECT_HEADER_FILES BaseAna.h FEESelector.h Counter.h)
 SET(PROJECT_HEADER_LINKDEF_FILES BaseAna_LinkDef.h)
-SET(PROJECT_CXX_FILES  BaseAna.cpp)
+SET(PROJECT_CXX_FILES  BaseAna.cpp FEESelector.cpp Counter.cpp)
 SET(PROJECT_EXTRA_LIBS ${HPS_DST_LIB_DIR}/libHpsEvent${CMAKE_SHARED_LIBRARY_SUFFIX} )
 
 #--- Below this line, you should not need to specify project specific things.

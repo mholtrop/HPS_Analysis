@@ -7,7 +7,9 @@ Just derive your own analysis from BaseAna and override the Process() and SlaveB
 
 Features:
 * Can be run with TProof on N processors simultaneously.
-* Can be run from TChain::Process("...")
+* Can be run from TChain::Process("MyClass()")
 * Can be run with the Run() method.
-* Makes it easier to debug your own analysis.
+** Makes it easier to debug your own analysis in a debugger by creating a mini application.
+
+
 

@@ -97,10 +97,13 @@ public:
 
   
 // Useful extra methods not needed for PROOF
+  
   virtual int             Run(int nevent=0);
   virtual void            Print(Option_t *opt="") const;
   virtual HpsEvent       *GetEvent(){return event;};
   virtual HpsParticle    *GetParticle(int n);
+  virtual double         GetAbsMomentum(HpsParticle *part);
+  virtual double         GetAbsMomentum(int n);
   
   void            SetOutputFileName(const string& outfile){output_file_name=outfile;};
   string          GetOutputFileName(void){return(output_file_name);};

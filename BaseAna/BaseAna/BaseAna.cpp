@@ -1,28 +1,26 @@
-/*
- *  BaseAna.cpp
- *  BaseAna
+/*!
+ * \class  BaseAna
+ * \brief  The base analysis class for hps-dst based analysis projects.
+ * \author Maurik Holtrop (maurik@physics.unh.edu)
+ * \date   2016
  *
- *  Created by Maurik Holtrop on 5/20/16.
- *  Copyright © 2016 Maurik. All rights reserved.
+ * The following methods are defined in this file:
+ *  -  Begin():          called every time a loop on the tree starts,
+ *                       a convenient place to create your histograms.
+ *  -  SlaveBegin():     called after Begin(), when on PROOF called only on the
+ *                       slave servers.
+ *  -  Process():        called for each event, in this function you decide what
+ *                       to read and fill your histograms.
+ *  -  SlaveTerminate(): called at the end of the loop on the tree, when on PROOF
+ *                       called only on the slave servers.
+ *  -  Terminate():      called at the end of the loop on the tree,
+ *                       a convenient place to draw/fit your histograms.
  *
- */
-
-// The following methods are defined in this file:
-//    Begin():        called every time a loop on the tree starts,
-//                    a convenient place to create your histograms.
-//    SlaveBegin():   called after Begin(), when on PROOF called only on the
-//                    slave servers.
-//    Process():      called for each event, in this function you decide what
-//                    to read and fill your histograms.
-//    SlaveTerminate: called at the end of the loop on the tree, when on PROOF
-//                    called only on the slave servers.
-//    Terminate():    called at the end of the loop on the tree,
-//                    a convenient place to draw/fit your histograms.
-//
-//
-//  Use:
-//  The intent is to be able to use this class with PROOF, however, for practicality, it can also be used directly with a TChain (or TTree),
-//  or given a file and a subsequent Run().
+ * ##Use:
+ *
+ *  The intent is to be able to use this class with PROOF, however, for practicality, it can also be used directly with a TChain (or TTree),
+ *  or given a file and a subsequent Run().
+*/
 
 #include <iostream>
 #include "BaseAna.h"
@@ -338,7 +336,7 @@ void BaseAna::Print(Option_t *option) const{
       HpsParticle *part= event->getParticle(HpsParticle::FINAL_STATE_PARTICLE, i);
       if(part){
         // Identify which cluster is associated with this particle.
-        int cluster_num=-1;
+        int cluster_num=-2;
         TRefArray *cl_ref = part->getClusters();
         if(cl_ref->GetEntries()>1) cout << "More than one cluster for this particle!";
         if(cl_ref->GetEntries()>0){
@@ -419,6 +417,18 @@ HpsParticle    *BaseAna::GetParticle(int n){
   }else{
     return event->getParticle(HpsParticle::FINAL_STATE_PARTICLE,n);
   }
+}
+
+double BaseAna::GetAbsMomentum(HpsParticle *part){
+  // Return the absolute of the momentum for the particle.
+  vector<double> mom = part->getMomentum();
+  return( sqrt( mom[0]*mom[0] + mom[1]*mom[1] + mom[2]*mom[2] ));
+}
+
+double BaseAna::GetAbsMomentum(int n){
+  HpsParticle *part = GetParticle(n);
+  if(part) return GetAbsMomentum(part);
+  else return -999;
 }
 
 void BaseAna::DrawEcal(int n){

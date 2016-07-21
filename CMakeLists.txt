@@ -31,8 +31,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin" CACHE PATH 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib" CACHE PATH "Build location of shared libraries.")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib" CACHE PATH "Build location of static libraries.")
 
+
 set(CMAKE_INSTALL_LIBDIR           "${CMAKE_INSTALL_PREFIX}/lib" CACHE PATH "Installation location of libraries. ")
 set(CMAKE_INSTALL_BINDIR           "${CMAKE_INSTALL_PREFIX}/bin" CACHE PATH "Installation location of binaries. ")
+set(CMAKE_INSTALL_DOCDIR           "${CMAKE_INSTALL_PREFIX}/doc" CACHE PATH "Installation location of documentation. ")
 
  
 # You need to tell CMake where to find the ROOT installation. This can be done in a number of ways:
@@ -71,7 +73,7 @@ include_directories("${HPS_DST_ROOT_DIR}/include/utils")
 set(HPS_DST_LIB_DIR "${HPS_DST_ROOT_DIR}/lib" CACHE PATH "Location of the libraries for hps-dst.")
 
 
-if(APPLE_NOT)
+if(APPLE)
   # use, i.e. don't skip the full RPATH for the build tree
   SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
 
@@ -92,7 +94,7 @@ if(APPLE_NOT)
     message("CMAKE_INSTALL_RPATH set to ${CMAKE_INSTALL_RPATH} ")
     
   ENDIF("${isSystemDir}" STREQUAL "-1")
-endif(APPLE_NOT)
+endif(APPLE)
 
 add_subdirectory(hps-dst)
 
@@ -101,3 +103,19 @@ add_subdirectory(BaseAna/BaseAna)
 
 include_directories(${CMAKE_SOURCE_DIR}/PiZero/PiZero)
 add_subdirectory(PiZero/PiZero)
+
+#------------------------------#
+#--- Generate Documentation ---#
+#------------------------------#
+
+# Find Doxygen
+find_package(Doxygen)
+
+# If Doxygen is found, add a target to generate the documentation
+if(DOXYGEN_FOUND)
+	configure_file(doc/Doxyfile ${HPS_ANALYSIS_SOURCE_DIR}/doc/Doxyfile @ONLY)
+	add_custom_target(docs ${DOXYGEN_EXECUTABLE} ${HPS_ANALYSIS_SOURCE_DIR}/doc/Doxyfile WORKING_DIRECTORY ${HPS_ANALYSIS_SOURCE_DIR}/doc COMMENT "Generating documentation" VERBATIM)
+else()
+	MESSAGE(STATUS "Doxygen was not found.  Documentation will not be generated.")
+endif(DOXYGEN_FOUND)
+
