@@ -32,6 +32,10 @@ public:
   FEESelector(){ cerr << "ERROR -- Class FEESelector should not be created without a pointer to a BaseAna class\n"; };
   FEESelector(BaseAna *ba);
   void Set_Engineering2015(void);
+  
+  bool Select(int np);
+  bool Select(HpsParticle *part);
+  
   ~FEESelector(){};
   
   
