@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		401A55381D0A0F450017AE2C /* libHpsEvent.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 401A55371D0A0F450017AE2C /* libHpsEvent.dylib */; };
-		40BE71201CEF9030002ADB25 /* PiZero.h in Headers */ = {isa = PBXBuildFile; fileRef = 40BE711F1CEF9030002ADB25 /* PiZero.h */; };
+		404397221D42A1DC00CA0FCA /* PiZero_LinkDef.h in Sources */ = {isa = PBXBuildFile; fileRef = 40BE712B1CEF912D002ADB25 /* PiZero_LinkDef.h */; };
 		40BE71241CEF9030002ADB25 /* PiZero.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40BE71231CEF9030002ADB25 /* PiZero.cpp */; };
-		40BE71331CEFACF8002ADB25 /* PiZero.h in Sources */ = {isa = PBXBuildFile; fileRef = 40BE711F1CEF9030002ADB25 /* PiZero.h */; };
 		40D9686F1D0A429A00B48D9F /* libBaseAna.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 40D9686E1D0A429A00B48D9F /* libBaseAna.dylib */; };
+		40F260911D42AB6E00B8A096 /* PiZero.h in Headers */ = {isa = PBXBuildFile; fileRef = 40BE711F1CEF9030002ADB25 /* PiZero.h */; };
 		40F5E0121D3467A4006D7BC0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40F5E0111D3467A4006D7BC0 /* main.cpp */; };
 		40F5E0161D3467E1006D7BC0 /* libPiZero.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 40BE711C1CEF9030002ADB25 /* libPiZero.dylib */; };
 /* End PBXBuildFile section */
@@ -20,15 +20,15 @@
 		40BE71321CEFAC91002ADB25 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
-			filePatterns = "*.h";
+			filePatterns = "*_LinkDef.h";
 			fileType = pattern.proxy;
 			isEditable = 1;
 			name = "Create Dictionaries from '*.h'";
 			outputFiles = (
-				"$(DERIVED_FILE_DIR)/${INPUT_FILE_BASE}Dict_rdict.pcm",
-				"$(DERIVED_FILE_DIR)/${INPUT_FILE_BASE}Dict.cc",
+				"$(DERIVED_FILE_DIR)/${PRODUCT_MODULE_NAME}Dict.cpp",
+				"$(DERIVED_FILE_DIR)/${PRODUCT_MODULE_NAME}Dict_rdict.pcm",
 			);
-			script = "echo ${ROOTSYS}/bin/rootcint -f ${DERIVED_FILE_DIR}/${INPUT_FILE_BASE}_Dict.cpp -c -p -I${HEADER_SEARCH_PATHS// / -I} ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}_Linkdef.h ${INPUT_FILE_PATH}\n    ${ROOTSYS}/bin/rootcint -f ${DERIVED_FILE_DIR}/${INPUT_FILE_BASE}Dict.cc -c -p -I${HEADER_SEARCH_PATHS// / -I}  ${INPUT_FILE_PATH} ${INPUT_FILE_DIR}/${INPUT_FILE_BASE}_Linkdef.h\n        # For ROOT 6 copy the pcm file to the LIB install path.\n        test -d ${DSTROOT}/${DYLIB_INSTALL_NAME_BASE} || mkdir -p ${DSTROOT}/${DYLIB_INSTALL_NAME_BASE}\n        test -d ${BUILT_PRODUCTS_DIR} || mkdir -p ${BUILT_PRODUCTS_DIR}\n        # ls ${DERIVED_FILE_DIR}\n        # This puts the pcm files in the ${DSTROOT}/${INSTALL_PATH} directory.\n        echo \"Send dict file to: \" ${DSTROOT}/${DYLIB_INSTALL_NAME_BASE}\n        if test -r ${DERIVED_FILE_DIR}/${INPUT_FILE_BASE}Dict_rdict.pcm; then cp -f ${DERIVED_FILE_DIR}/${INPUT_FILE_BASE}Dict_rdict.pcm ${DYLIB_INSTALL_NAME_BASE} ; fi\n        # cp  ${DERIVED_FILE_DIR}/${INPUT_FILE_BASE}Dict_rdict.pcm ${DYLIB_INSTALL_NAME_BASE}\n        # This send the pcm files to to build product dir\n        echo \"Send file rdict.pcm to: \" ${BUILT_PRODUCTS_DIR}\n        if test -r ${DERIVED_FILE_DIR}/${INPUT_FILE_BASE}Dict_rdict.pcm; then cp -f ${DERIVED_FILE_DIR}/${INPUT_FILE_BASE}Dict_rdict.pcm ${BUILT_PRODUCTS_DIR} ; fi";
+			script = "#\n# Script to create the dictionary for a multi class LinkDef file.\n# The names of the header files are extracted from the LinkDef file.\n# The name of the dictionary files will be based on the PRODUCT_MODULE_NAME\n#\necho \"INPUT_FILE_NAME = ${INPUT_FILE_NAME}\"\necho \"INPUT_FILE_BASE = ${INPUT_FILE_BASE}\"\necho \"PRODUCT_MODULE_NAME = ${PRODUCT_MODULE_NAME}\"\nHEADER_LIST=`cat ${INPUT_FILE_DIR}/${INPUT_FILE_NAME} | gawk '/pragma *link *C++.*class /{a=$5;print gensub(/+;/,\"\",\"g\",a)\".h\" }' `\necho \"HEADER_LIST = ${HEADER_LIST}\"\nHEADER_LIST_FULL=`for i in $HEADER_LIST; do echo ${INPUT_FILE_DIR}/${i}; done`\necho \"HEADER_LIST_FULL = ${HEADER_LIST_FULL}\"\necho ${ROOTSYS}/bin/rootcint -f ${DERIVED_FILES_DIR}/${PRODUCT_MODULE_NAME}Dict.cpp -c -p -I${HEADER_SEARCH_PATHS// / -I} ${HEADER_LIST_FULL} ${INPUT_FILE_DIR}/${INPUT_FILE_NAME}\n\ntest -d ${DERIVED_FILES_DIR} || mkdir -p ${DERIVED_FILES_DIR}\n${ROOTSYS}/bin/rootcint -f ${DERIVED_FILES_DIR}/${PRODUCT_MODULE_NAME}Dict.cpp -c -p -I${HEADER_SEARCH_PATHS// / -I} ${HEADER_LIST_FULL} ${INPUT_FILE_DIR}/${INPUT_FILE_NAME}\n        \n        \n# For ROOT 6 copy the pcm file to the LIB install path.\ntest -d ${DSTROOT}/${DYLIB_INSTALL_NAME_BASE} || mkdir -p ${DSTROOT}/${DYLIB_INSTALL_NAME_BASE}\ntest -d ${BUILT_PRODUCTS_DIR} || mkdir -p ${BUILT_PRODUCTS_DIR}\n# ls ${DERIVED_FILE_DIR}\n# This puts the pcm files in the ${DSTROOT}/${INSTALL_PATH} directory.\necho \"Send dict file to: \" ${DSTROOT}/${DYLIB_INSTALL_NAME_BASE}\nif test -r ${DERIVED_FILES_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm; then cp -f ${DERIVED_FILES_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ${DSTROOT}/${DYLIB_INSTALL_NAME_BASE}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ; fi\n# cp  ${DERIVED_FILE_DIR}/${DICT_BASE_NAME}Dict_rdict.pcm ${DYLIB_INSTALL_NAME_BASE}\n# This send the pcm files to to build product dir\necho \"Send file rdict.pcm to: \" ${BUILT_PRODUCTS_DIR}\nif test -r ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm; then cp -f ${DERIVED_FILES_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ; fi";
 		};
 /* End PBXBuildRule section */
 
@@ -146,7 +146,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				40BE71201CEF9030002ADB25 /* PiZero.h in Headers */,
+				40F260911D42AB6E00B8A096 /* PiZero.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,7 +230,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				40BE71241CEF9030002ADB25 /* PiZero.cpp in Sources */,
-				40BE71331CEFACF8002ADB25 /* PiZero.h in Sources */,
+				404397221D42A1DC00CA0FCA /* PiZero_LinkDef.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,6 +400,7 @@
 				40F5E0141D3467A4006D7BC0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
