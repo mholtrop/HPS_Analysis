@@ -101,15 +101,6 @@ void BaseAna::Init(TTree *tree)
       
     }
    
-// -- This bit is done in Notify();
-//
-//    b_event = fChain->GetBranch("Event");
-//    if(b_event != NULL){
-//      b_event->SetAddress(&event);
-//    }else{
-//      if(fDebug & kDebug_Error) cout << "**** ERROR **** Chain does not contain Event branch.\n";
-//    }
-//    if(fDebug & kDebug_Info) cout << "           -- Init done, set Tree and Branch" << endl;
   }else{
     if(fDebug & kDebug_Error) cout << "**** ERROR **** - init without a chain.\n";
   }
