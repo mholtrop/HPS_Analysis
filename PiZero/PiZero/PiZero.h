@@ -30,6 +30,7 @@ using namespace std;
 #include <TLorentzVector.h>
 
 #include "BaseAna.h"
+#include "FEESelector.h"
 
 class PiZero : public BaseAna {
 public:
@@ -48,20 +49,39 @@ public:
   TH1F *positron_count;
 
   TH1F *cluster_energy;
+  TH1F *cluster_e_energy;
+  TH1F *cluster_e_matched_energy;
   TH1F *cluster_fee_energy;
-  
   TH1F *cluster_fee_matched_energy;
   
   TH2F *cluster_loc;
+
+  TH2F *cluster_e_loc;
+  TH2F *cluster_e_matched_loc;
+  
   TH2F *cluster_fee_loc;
   TH2F *cluster_fee_matched_loc;
   
   TH2F *cluster_track_match_xy;
   TH1F *cluster_track_match_dr;
+  TH1F *cluster_track_match_de;
+
+  TH2F *cluster_e_track_match_xy;
+  TH1F *cluster_e_track_match_dr;
+  TH1F *cluster_e_track_match_de;
+
+  TH2F *cluster_e_matched_track_match_xy;
+  TH1F *cluster_e_matched_track_match_dr;
+  TH1F *cluster_e_matched_track_match_de;
   
   TH2F *cluster_fee_track_match_xy;
   TH1F *cluster_fee_track_match_dr;
-  
+  TH1F *cluster_fee_track_match_de;
+
+  TH2F *cluster_fee_matched_track_match_xy;
+  TH1F *cluster_fee_matched_track_match_dr;
+  TH1F *cluster_fee_matched_track_match_de;
+
   TH1F *photon_count;
   TH1F *photon_energy;
   TH2F *photon_thetaphi;
@@ -70,6 +90,7 @@ public:
   TH1F *pizero_mass;
   TH1F *pizero_theta;
   
+  FEESelector *FEE;
   
   
 public:

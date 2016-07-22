@@ -73,6 +73,8 @@ PiZero::PiZero(TTree *tree): BaseAna(tree) {
   pizero_mass=nullptr;
   pizero_theta=nullptr;
   
+  FEE = new FEESelector(this);
+  
   SetOutputFileName("PiZero_out.root");
   
 }
@@ -146,19 +148,35 @@ void PiZero::SlaveBegin(TTree *tree)
   fOutput->Add(positron_count = new TH1F("positron_count","Positron Count",21,0,21));
 
   fOutput->Add(cluster_energy = new TH1F("cluster_energy","Cluster Energy",1500,0.,1.5));
+  fOutput->Add(cluster_e_energy = new TH1F("cluster_e_energy","Cluster Energy for e-",1500,0.,1.5));
   fOutput->Add(cluster_fee_energy = new TH1F("cluster_fee_energy","Cluster Energy for FEE",1500,0.,1.5));
-  
+
+  fOutput->Add(cluster_e_matched_energy= new TH1F("cluster_fee_matched_energy","Cluter Energy for e-, mom - energy match",1500,0.,1.5));
   fOutput->Add(cluster_fee_matched_energy= new TH1F("cluster_fee_matched_energy","Cluter Energy for FEE, mom - energy match",1500,0.,1.5));
 
   fOutput->Add(cluster_loc = new TH2F("cluster_loc","Cluster location",350,-330,370,180,-90,90));
+  fOutput->Add(cluster_e_loc = new TH2F("cluster_e_loc","Cluster location, e-",350,-330,370,180,-90,90));
+  fOutput->Add(cluster_e_matched_loc = new TH2F("cluster_e_matched_loc","Cluster location, e- matched",350,-330,370,180,-90,90));
   fOutput->Add(cluster_fee_loc = new TH2F("cluster_fee_loc","Cluster location, FEE",350,-330,370,180,-90,90));
   fOutput->Add(cluster_fee_matched_loc = new TH2F("cluster_fee_matched_loc","Cluster location, FEE matched",350,-330,370,180,-90,90));
 
   fOutput->Add(cluster_track_match_xy = new TH2F("cluster_track_match_xy","Cluster - Track match location, dx ,dy",600,-30,30,600,-30,30));
-  fOutput->Add(cluster_track_match_dr = new TH1F("cluster_track_match_dr","Cluster - Track match location, dr",1000,-50,50));
+  fOutput->Add(cluster_track_match_dr = new TH1F("cluster_track_match_dr","Cluster - Track match location, dr",500,0,50));
+  fOutput->Add(cluster_track_match_de = new TH1F("cluster_track_match_de","Cluster - Track match Energy, de",1000,-0.5,0.5));
   
-  fOutput->Add(cluster_fee_track_match_xy = new TH2F("cluster_fee_track_match_xy","Cluster - Track match location, dx ,dy",600,-30,30,600,-30,30));
-  fOutput->Add(cluster_fee_track_match_dr = new TH1F("cluster_fee_track_match_dr","Cluster - Track match location, dr",1000,-50,50));
+  fOutput->Add(cluster_e_track_match_xy = new TH2F("cluster_e_track_match_xy","Cluster e- - Track match location, dx ,dy",600,-30,30,600,-30,30));
+  fOutput->Add(cluster_e_track_match_dr = new TH1F("cluster_e_track_match_dr","Cluster e- - Track match location, dr",500,0,50));
+  fOutput->Add(cluster_e_track_match_de = new TH1F("cluster_e_track_match_de","Cluster e- - Track match Energy, de",1000,-0.5,0.5));
+  fOutput->Add(cluster_fee_track_match_xy = new TH2F("cluster_fee_track_match_xy","Cluster FEE - Track match location, dx ,dy",600,-30,30,600,-30,30));
+  fOutput->Add(cluster_fee_track_match_dr = new TH1F("cluster_fee_track_match_dr","Cluster FEE - Track match location, dr",500,0,50));
+  fOutput->Add(cluster_fee_track_match_de = new TH1F("cluster_fee_track_match_de","Cluster FEE - Track match Energy, de",1000,-0.5,0.5));
+
+  fOutput->Add(cluster_e_matched_track_match_xy = new TH2F("cluster_e_matched_track_match_xy","Cluster e- - Track match location, dx ,dy",600,-30,30,600,-30,30));
+  fOutput->Add(cluster_e_matched_track_match_dr = new TH1F("cluster_e_matched_track_match_dr","Cluster e- - Track match location, dr",500,0,50));
+  fOutput->Add(cluster_e_matched_track_match_de = new TH1F("cluster_e_matched_track_match_de","Cluster e- - Track match Energy, de",1000,-0.5,0.5));
+  fOutput->Add(cluster_fee_matched_track_match_xy = new TH2F("cluster_fee_matched_track_match_xy","Cluster FEE - Track match location, dx ,dy",600,-30,30,600,-30,30));
+  fOutput->Add(cluster_fee_matched_track_match_dr = new TH1F("cluster_fee_matched_track_match_dr","Cluster FEE - Track match location, dr",500,0,50));
+  fOutput->Add(cluster_fee_matched_track_match_de = new TH1F("cluster_fee_matched_track_match_de","Cluster FEE - Track match Energy, de",1000,-0.5,0.5));
   
   fOutput->Add(photon_count = new TH1F("photon_count","Photon Count",21,0,21));
   fOutput->Add(photon_energy = new TH1F("photon_energy","Photon Energy",300,0.,1.5));
@@ -219,6 +237,8 @@ Bool_t PiZero::Process(Long64_t entry)
   for( int iclus=0;iclus < n_clusters; ++iclus){
     EcalCluster *clus= event->getEcalCluster(iclus);
     cluster_energy->Fill(clus->getEnergy());
+    vector<double> pos = clus->getPosition();
+    cluster_loc->Fill(pos[0],pos[1]);
   }
   
   int n_tracks=event->getNumberOfTracks();
@@ -247,36 +267,69 @@ Bool_t PiZero::Process(Long64_t entry)
     if( PDGtype == 22){        // Yup it's a photon -- To Do: More stringent photon tests here?
       photons.push_back(part); // So put it on our list.
     }else if (PDGtype == 11){
-      ++n_electrons;
+      if(part->getType() <32) continue;  // Skip the particles that are not GBL re-fit. Avoids duplicates.
       
-      if(GetAbsMomentum(part) > 0.8 && part->getGoodnessOfPID()<20.){
-        TRefArray *clus_ref = part->getClusters();
-        if(clus_ref &&  clus_ref->GetEntries() > 0){
-          if( clus_ref->GetEntries() > 1 ){
-            cout << "WOA -- This electron has more than one cluster? "<< np << " \n";
-            Print("all");
-          }
-          EcalCluster *clus= (EcalCluster *)clus_ref->At(0);
-          if(abs(clus->getEnergy() - part->getEnergy() ) > 0.01 ){
-            cout << "Hum --- Cluster and particle energies differ by more than 10 MeV np="<< np << "\n";
-            Print("all");
-          }
-          
-          
-          
-          
-          
-          
-          
-        }else{
-          cout << "ERR --- Electron without a cluster ref np="<<np << " \n";
-          Print("all");
+      ++n_electrons;
+      TRefArray *clus_ref  = part->getClusters();
+      TRefArray *track_ref = part->getTracks();
+      if(clus_ref->GetEntries() == 1 && track_ref->GetEntries() == 1){
+        EcalCluster *clus = (EcalCluster *)clus_ref->At(0);
+        SvtTrack *track = (SvtTrack *) track_ref->At(0);
+        
+        double clus_energy =  clus->getEnergy();
+        double track_energy = GetAbsMomentum(part);
+        
+        double de = clus_energy - track_energy;
+        
+        vector<double> pos = clus->getPosition();
+        vector<double> track_pos = track->getPositionAtEcal();
+        
+        double dx = pos[0] - track_pos[0];
+        double dy = pos[1] - track_pos[1];
+        double dr = sqrt( dx*dx + dy*dy );
+
+        cluster_e_energy->Fill(clus_energy);
+        cluster_e_loc->Fill(pos[0],pos[1]);
+
+        cluster_e_track_match_xy->Fill(dx,dy);
+        cluster_e_track_match_dr->Fill(dr);
+        cluster_e_track_match_de->Fill(de);
+        
+        if( abs(de) < 0.1 ){
+          cluster_e_matched_energy->Fill(clus_energy);
+          cluster_e_matched_loc->Fill(pos[0],pos[1]);
+
+          cluster_e_matched_track_match_xy->Fill(dx,dy);
+          cluster_e_matched_track_match_dr->Fill(dr);
+
         }
         
+        if( dr < 10 ){
+          cluster_e_matched_track_match_de->Fill(de);
+        }
         
-        cluster_fee_energy->Fill(part->getEnergy());
+        if(FEE->Select(part)){
+          
+          cluster_fee_energy->Fill(clus_energy);
+          cluster_fee_loc->Fill(pos[0],pos[1]);
+
+          cluster_fee_track_match_xy->Fill(dx,dy);
+          cluster_fee_track_match_dr->Fill(dr);
+          cluster_fee_track_match_de->Fill(de);
+          
+          if( abs(clus_energy - GetAbsMomentum(part)) < 0.001 ){
+            cluster_fee_matched_energy->Fill(clus_energy);
+            cluster_fee_matched_loc->Fill(pos[0],pos[1]);
+            
+            cluster_fee_matched_track_match_xy->Fill(dx,dy);
+            cluster_fee_matched_track_match_dr->Fill(dr);
+          }
+          
+          if( dr < 10 ){
+            cluster_fee_matched_track_match_de->Fill(de);
+          }
+        }
       }
-      
     }else if (PDGtype == -11){
       ++n_positrons;
     }
