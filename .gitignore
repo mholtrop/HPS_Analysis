@@ -5,6 +5,9 @@ lib/
 *.o
 *.so
 
+doc/html
+doc/latex
+
 # XCode files that change by user
 Release
 Debug
