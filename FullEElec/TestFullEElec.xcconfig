@@ -1,0 +1,11 @@
+//
+//  TestFullEElec.xcconfig
+//  FullEElec
+//
+//  Created by Maurik Holtrop on 7/11/16.
+//  Copyright © 2016 Maurik. All rights reserved.
+//
+#include "FullEElec.xcconfig"
+PRODUCT_NAME=TestFullEElec
+EXECUTABLE_PREFIX=
+INSTALL_PATH=/bin

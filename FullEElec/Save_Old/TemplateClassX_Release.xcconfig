@@ -1,0 +1,14 @@
+//
+//  TemplateClassX_Release.xcconfig
+//  TemplateClassX
+//
+//  Created by Maurik Holtrop on 5/20/16.
+//  Copyright © 2016 Maurik. All rights reserved.
+//
+
+#include "TemplateClassX.xcconfig"
+
+GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+INSTALL_PATH=/Release
+DYLIB_INSTALL_NAME_BASE=${DSTROOT}/${INSTALL_PATH}
+OTHER_LDFLAGS= ${ROOTLIBS} -L${DSTROOT}/Release
