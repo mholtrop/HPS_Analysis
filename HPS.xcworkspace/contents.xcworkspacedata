@@ -2,10 +2,19 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:README.md">
+   </FileRef>
+   <FileRef
+      location = "group:TemplateClassX/TemplateClassX.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:BaseAna/BaseAna.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:hps-dst/src/HpsEvent/HpsEvent.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:FullEElec/FullEElec.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:PiZero/PiZero.xcodeproj">

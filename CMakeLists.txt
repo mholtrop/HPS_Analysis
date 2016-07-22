@@ -104,6 +104,9 @@ add_subdirectory(BaseAna/BaseAna)
 include_directories(${CMAKE_SOURCE_DIR}/PiZero/PiZero)
 add_subdirectory(PiZero/PiZero)
 
+include_directories(${CMAKE_SOURCE_DIR}/FullEElec/FullEElec)
+add_subdirectory(FullEElec/FullEElec)
+
 #------------------------------#
 #--- Generate Documentation ---#
 #------------------------------#
