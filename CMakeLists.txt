@@ -47,7 +47,8 @@ else()
     message("Using ROOT from $ENV{ROOTSYS} ")
 endif()
 
-list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS} )
+list(APPEND CMAKE_PREFIX_PATH "$ENV{ROOTSYS}/cmake" )
+message("CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}")
 
 #---Locate the ROOT package and defines a number of variables (e.g. ROOT_INCLUDE_DIRS)
 find_package(ROOT REQUIRED COMPONENTS MathCore RIO Hist Tree Net)
