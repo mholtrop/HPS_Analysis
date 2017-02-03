@@ -71,7 +71,7 @@ include_directories("${HPS_DST_ROOT_DIR}/include/dst")
 include_directories("${HPS_DST_ROOT_DIR}/include/hps_event")
 include_directories("${HPS_DST_ROOT_DIR}/include/utils")
 
-set(HPS_DST_LIB_DIR "${HPS_DST_ROOT_DIR}/lib" CACHE PATH "Location of the libraries for hps-dst.")
+set(HPS_DST_LIB_DIR "${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Location of the libraries for hps-dst.")
 
 
 if(APPLE)

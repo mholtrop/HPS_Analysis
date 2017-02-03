@@ -46,6 +46,7 @@ public:
   long    evt_count;     // Current sequence number for event.
 
   string  output_file_name;
+  TFile   *output_file;
 
   
   enum Debug_codes {
@@ -107,6 +108,7 @@ public:
   
   void            SetOutputFileName(const string& outfile){output_file_name=outfile;};
   string          GetOutputFileName(void){return(output_file_name);};
+  void            WriteList(TList *ll);
 
   void            DrawEcal(int n=2);
   TH2F           *EcalHitMap(void);

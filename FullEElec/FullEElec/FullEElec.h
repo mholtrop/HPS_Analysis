@@ -31,6 +31,7 @@ using namespace std;
 
 #include "BaseAna.h"
 #include "FEESelector.h"
+#include "FullEE_Histos.h"
 
 class FullEElec : public BaseAna {
 public:
@@ -48,44 +49,22 @@ public:
   TH1F *electron_count;
   TH1F *positron_count;
 
-  TH1F *cluster_energy;
-  TH1F *cluster_e_energy;
-  TH1F *cluster_e_matched_energy;
-  TH1F *cluster_fee_energy;
-  TH1F *cluster_fee_matched_energy;
-  
-  TH2F *cluster_loc;
-
-  TH2F *cluster_e_loc;
-  TH2F *cluster_e_matched_loc;
-  
-  TH2F *cluster_fee_loc;
-  TH2F *cluster_fee_matched_loc;
-  
-  TH2F *cluster_track_match_xy;
-  TH1F *cluster_track_match_dr;
-  TH1F *cluster_track_match_de;
-
-  TH2F *cluster_e_track_match_xy;
-  TH1F *cluster_e_track_match_dr;
-  TH1F *cluster_e_track_match_de;
-
-  TH2F *cluster_e_matched_track_match_xy;
-  TH1F *cluster_e_matched_track_match_dr;
-  TH1F *cluster_e_matched_track_match_de;
-  
-  TH2F *cluster_fee_track_match_xy;
-  TH1F *cluster_fee_track_match_dr;
-  TH1F *cluster_fee_track_match_de;
-
-  TH2F *cluster_fee_matched_track_match_xy;
-  TH1F *cluster_fee_matched_track_match_dr;
-  TH1F *cluster_fee_matched_track_match_de;
-
   TH1F *photon_count;
   TH1F *photon_energy;
   TH2F *photon_thetaphi;
   TH2F *photon_xy;
+
+  FullEE_Histos *clus;
+  FullEE_Histos *clus_matched_e;
+  FullEE_Histos *clus_matched_r;
+  FullEE_Histos *clus_e;
+  FullEE_Histos *clus_e_matched_e;
+  FullEE_Histos *clus_e_matched_r;
+  FullEE_Histos *clus_fee;
+  FullEE_Histos *clus_fee_matched_e;
+  FullEE_Histos *clus_fee_matched_r;
+
+  vector<FullEE_Histos *> fee_hists;
   
   FEESelector *FEE;
   

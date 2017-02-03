@@ -13,5 +13,6 @@
 #pragma link C++ nestedclasses;
 
 #pragma link C++ class FullEElec+;
+#pragma link C++ class FullEE_Histos+;
 
 #endif

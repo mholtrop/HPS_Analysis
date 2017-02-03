@@ -249,6 +249,34 @@ void BaseAna::SlaveTerminate()
   if(fDebug & kDebug_L1) cout << "BaseAna::SlaveTerminate() \n";
 }
 
+//
+// Helper method to allow itterative writing of nested lists to a file.
+// It is expected that the file has already been opened.
+//
+void BaseAna::WriteList(TList *ll){
+  TIter nn(ll);
+  while(TObject *o=nn()){
+    if(o->IsFolder()){
+      if(fDebug & kDebug_L1) cout << "Create folder: "<< o->GetName() << " \n";
+      output_file->mkdir(o->GetName());
+      output_file->cd(o->GetName());
+      if( o->IsA() == TList::Class() ){
+        WriteList( (TList *)o);
+      }else if(o->IsA() == TDirectory::Class()){
+        TDirectory *dir=(TDirectory *)o;
+        TList *ld = dir->GetList();
+        WriteList(ld);
+      }else{
+        cout << "ERROR -- I don't know this type of folder object :" << o->ClassName() << endl;
+      }
+      output_file->cd("..");
+    }else{
+      if(fDebug & kDebug_L1) cout << "Write Object: "<< o->GetName() << " \n";
+      o->Write();
+    }
+  }
+}
+
 void BaseAna::Terminate()
 {
   // The Terminate() function is the last function to be called during
@@ -257,16 +285,15 @@ void BaseAna::Terminate()
   
   if(fDebug & kDebug_L1) cout << "BaseAna::Terminate() \n";
   TList *list=GetOutputList();
-  cout << list->GetEntries() << endl;
+  if(fDebug & kDebug_L1) cout << "The list has "<< list->GetEntries() << " entries \n";
   
-  // Write the contends to a file, but skip the first three objects.
+  // Write the contends to a file/
   if(fDebug & kDebug_L1) cout << "Writing output file: " << output_file_name << endl;
-  TFile file_out(output_file_name.data(),"RECREATE");
-  for(int i=0;i<list->GetEntries();++i){
-    
-    list->At(i)->Write();
-  }
-  file_out.Close();
+  output_file = new TFile(output_file_name.data(),"RECREATE");
+
+  WriteList(list);
+  
+  output_file->Close();
   
 }
 
