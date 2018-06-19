@@ -1,0 +1,45 @@
+//
+//  SimAna.xcconfig
+//  SimAna
+//
+//  Created by Maurik Holtrop on 5/20/16.
+//  Copyright © 2016 Maurik. All rights reserved.
+//
+
+PRODUCT_NAME=SimAna
+DSTROOT=/Users/maurik/Documents/Analysis/HPS_Analysis
+
+// ======= ROOT 6 ==============
+ROOTSYS=/Users/maurik/root/root.git
+ROOTLIBS=-L${ROOTSYS}/lib -lCore -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -lProof -lpthread -stdlib=libc++ -lm -ldl
+CLANG_CXX_LANGUAGE_STANDARD = c++11
+
+// ======== LCIO ===========
+LCIO=/data/HPS
+LCIO_LIBS= -L${LCIO}/lib -llcio.2.12.0
+
+HPSDST=${DSTROOT}/hps-dst
+BASEANA=${DSTROOT}/BaseAna
+
+// ${HPSDST}/include/hps_event
+HEADER_SEARCH_PATHS=  ${HPSDST}/include/hps_event ${LCIO}/include  ${ROOTSYS}/include
+LIBRARY_SEARCH_PATHS=${ROOTSYS}/lib 
+
+PREBINDING = NO;
+GCC_WARN_ABOUT_RETURN_TYPE = YES;
+GCC_WARN_UNUSED_VARIABLE = YES;
+
+GCC_INLINES_ARE_PRIVATE_EXTERN=NO
+GCC_SYMBOLS_PRIVATE_EXTERN = NO
+
+EXECUTABLE_EXTENSION = dylib
+LD_DYLIB_INSTALL_NAME = $(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_NAME)
+EXECUTABLE_PREFIX=lib
+
+// -L${DSTROOT}/${CONFIGURATION}
+OTHER_LDFLAGS= ${ROOTLIBS} ${LCIO_LIBS}
+OTHER_CPLUSPLUSFLAGS =  -fPIC -stdlib=libc++
+
+DEPLOYMENT_LOCATION = YES
+DEPLOYMENT_POSTPROCESSING = YES
+
