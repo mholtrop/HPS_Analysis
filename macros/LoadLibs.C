@@ -2,4 +2,5 @@
 // This is needed to run a batch job correctly.
 void LoadLibs(void){
   gSystem->Load("/Users/maurik/Documents/Analysis/HPS_Analysis/Release/libPiZero.dylib");
+  gSystem->Load("/Users/maurik/Documents/Analysis/HPS_Analysis/Release/libFullEElec.dylib");
 }

@@ -12,6 +12,8 @@
 		40BE71241CEF9030002ADB25 /* FullEElec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40BE71231CEF9030002ADB25 /* FullEElec.cpp */; };
 		40D9686F1D0A429A00B48D9F /* libBaseAna.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 40D9686E1D0A429A00B48D9F /* libBaseAna.dylib */; };
 		40F260911D42AB6E00B8A096 /* FullEElec.h in Headers */ = {isa = PBXBuildFile; fileRef = 40BE711F1CEF9030002ADB25 /* FullEElec.h */; };
+		40F2609D1D42D10200B8A096 /* FullEE_Histos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40F2609B1D42D10200B8A096 /* FullEE_Histos.cpp */; };
+		40F2609E1D42D10200B8A096 /* FullEE_Histos.h in Headers */ = {isa = PBXBuildFile; fileRef = 40F2609C1D42D10200B8A096 /* FullEE_Histos.h */; };
 		40F5E0121D3467A4006D7BC0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40F5E0111D3467A4006D7BC0 /* main.cpp */; };
 		40F5E0161D3467E1006D7BC0 /* libFullEElec.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 40BE711C1CEF9030002ADB25 /* libFullEElec.dylib */; };
 /* End PBXBuildFile section */
@@ -28,7 +30,7 @@
 				"$(DERIVED_FILE_DIR)/${PRODUCT_MODULE_NAME}Dict.cpp",
 				"$(DERIVED_FILE_DIR)/${PRODUCT_MODULE_NAME}Dict_rdict.pcm",
 			);
-			script = "#\n# Script to create the dictionary for a multi class LinkDef file.\n# The names of the header files are extracted from the LinkDef file.\n# The name of the dictionary files will be based on the PRODUCT_MODULE_NAME\n#\necho \"INPUT_FILE_NAME = ${INPUT_FILE_NAME}\"\necho \"INPUT_FILE_BASE = ${INPUT_FILE_BASE}\"\necho \"PRODUCT_MODULE_NAME = ${PRODUCT_MODULE_NAME}\"\nHEADER_LIST=`cat ${INPUT_FILE_DIR}/${INPUT_FILE_NAME} | gawk '/pragma *link *C++.*class /{a=$5;print gensub(/+;/,\"\",\"g\",a)\".h\" }' `\necho \"HEADER_LIST = ${HEADER_LIST}\"\nHEADER_LIST_FULL=`for i in $HEADER_LIST; do echo ${INPUT_FILE_DIR}/${i}; done`\necho \"HEADER_LIST_FULL = ${HEADER_LIST_FULL}\"\necho ${ROOTSYS}/bin/rootcint -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict.cpp -c -p -I${HEADER_SEARCH_PATHS// / -I} ${HEADER_LIST_FULL} ${INPUT_FILE_DIR}/${INPUT_FILE_NAME}\n\ntest -d ${DERIVED_FILE_DIR} || mkdir -p ${DERIVED_FILE_DIR}\n${ROOTSYS}/bin/rootcint -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict.cpp -c -p -I${HEADER_SEARCH_PATHS// / -I} ${HEADER_LIST_FULL} ${INPUT_FILE_DIR}/${INPUT_FILE_NAME}\n        \n        \n# For ROOT 6 copy the pcm file to the LIB install path.\ntest -d ${DSTROOT}/${DYLIB_INSTALL_NAME_BASE} || mkdir -p ${DSTROOT}/${DYLIB_INSTALL_NAME_BASE}\ntest -d ${BUILT_PRODUCTS_DIR} || mkdir -p ${BUILT_PRODUCTS_DIR}\n# ls ${DERIVED_FILE_DIR}\n# This puts the pcm files in the ${DSTROOT}/${INSTALL_PATH} directory.\necho \"Send dict file from: ${DERIVED_FILES_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm to: \" ${DSTROOT}/${DYLIB_INSTALL_NAME_BASE}\nif test -r ${DERIVED_FILES_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm; then cp -f ${DERIVED_FILES_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ${DSTROOT}/${DYLIB_INSTALL_NAME_BASE}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ; fi\n# cp  ${DERIVED_FILE_DIR}/${DICT_BASE_NAME}Dict_rdict.pcm ${DYLIB_INSTALL_NAME_BASE}\n# This send the pcm files to to build product dir\necho \"Send file rdict.pcm to: \" ${BUILT_PRODUCTS_DIR}\nif test -r ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm; then cp -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ; fi";
+			script = "#\n# Script to create the dictionary for a multi class LinkDef file.\n# The names of the header files are extracted from the LinkDef file.\n# The name of the dictionary files will be based on the PRODUCT_MODULE_NAME\n#\necho \"INPUT_FILE_NAME = ${INPUT_FILE_NAME}\"\necho \"INPUT_FILE_BASE = ${INPUT_FILE_BASE}\"\necho \"PRODUCT_MODULE_NAME = ${PRODUCT_MODULE_NAME}\"\nHEADER_LIST=`cat ${INPUT_FILE_DIR}/${INPUT_FILE_NAME} | gawk '/pragma *link *C++.*class /{a=$5;print gensub(/+;/,\"\",\"g\",a)\".h\" }' `\necho \"HEADER_LIST = ${HEADER_LIST}\"\nHEADER_LIST_FULL=`for i in $HEADER_LIST; do echo ${INPUT_FILE_DIR}/${i}; done`\necho \"HEADER_LIST_FULL = ${HEADER_LIST_FULL}\"\necho ${ROOTSYS}/bin/rootcint -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict.cpp -c -p -I${HEADER_SEARCH_PATHS// / -I} ${HEADER_LIST_FULL} ${INPUT_FILE_DIR}/${INPUT_FILE_NAME}\n\ntest -d ${DERIVED_FILE_DIR} || mkdir -p ${DERIVED_FILE_DIR}\n${ROOTSYS}/bin/rootcint -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict.cpp -c -p -I${HEADER_SEARCH_PATHS// / -I} ${HEADER_LIST_FULL} ${INPUT_FILE_DIR}/${INPUT_FILE_NAME}\n        \n        \n# For ROOT 6 copy the pcm file to the LIB install path.\ntest -d $${DYLIB_INSTALL_NAME_BASE} || mkdir -p ${DYLIB_INSTALL_NAME_BASE}\ntest -d ${BUILT_PRODUCTS_DIR} || mkdir -p ${BUILT_PRODUCTS_DIR}\n# ls ${DERIVED_FILE_DIR}\n# This puts the pcm files in the ${DSTROOT}/${INSTALL_PATH} directory.\necho \"Send dict file from: ${DERIVED_FILES_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm to: ${DYLIB_INSTALL_NAME_BASE}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm\"\nif test -r ${DERIVED_FILES_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm; then cp -f ${DERIVED_FILES_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ${DYLIB_INSTALL_NAME_BASE}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ; fi\n# cp  ${DERIVED_FILE_DIR}/${DICT_BASE_NAME}Dict_rdict.pcm ${DYLIB_INSTALL_NAME_BASE}\n# This send the pcm files to to build product dir\necho \"Send file rdict.pcm to: \" ${BUILT_PRODUCTS_DIR}\nif test -r ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm; then cp -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ; fi";
 		};
 /* End PBXBuildRule section */
 
@@ -63,6 +65,8 @@
 		40BE712D1CEF9346002ADB25 /* FullEElec_Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = FullEElec_Debug.xcconfig; sourceTree = "<group>"; };
 		40BE712E1CEF936F002ADB25 /* FullEElec_Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = FullEElec_Release.xcconfig; sourceTree = "<group>"; };
 		40D9686E1D0A429A00B48D9F /* libBaseAna.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libBaseAna.dylib; path = ../Release/libBaseAna.dylib; sourceTree = "<group>"; };
+		40F2609B1D42D10200B8A096 /* FullEE_Histos.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FullEE_Histos.cpp; sourceTree = "<group>"; };
+		40F2609C1D42D10200B8A096 /* FullEE_Histos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FullEE_Histos.h; sourceTree = "<group>"; };
 		40F5E00F1D3467A4006D7BC0 /* TestFullEElec */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestFullEElec; sourceTree = BUILT_PRODUCTS_DIR; };
 		40F5E0111D3467A4006D7BC0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		40F5E0171D346922006D7BC0 /* TestFullEElec.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = TestFullEElec.xcconfig; sourceTree = "<group>"; };
@@ -116,6 +120,8 @@
 				40BE712B1CEF912D002ADB25 /* FullEElec_LinkDef.h */,
 				40BE711F1CEF9030002ADB25 /* FullEElec.h */,
 				40BE71231CEF9030002ADB25 /* FullEElec.cpp */,
+				40F2609C1D42D10200B8A096 /* FullEE_Histos.h */,
+				40F2609B1D42D10200B8A096 /* FullEE_Histos.cpp */,
 			);
 			path = FullEElec;
 			sourceTree = "<group>";
@@ -147,6 +153,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				40F260911D42AB6E00B8A096 /* FullEElec.h in Headers */,
+				40F2609E1D42D10200B8A096 /* FullEE_Histos.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -195,7 +202,7 @@
 		40BE71141CEF9030002ADB25 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = Maurik;
 				TargetAttributes = {
 					40BE711B1CEF9030002ADB25 = {
@@ -231,6 +238,7 @@
 			files = (
 				40BE71241CEF9030002ADB25 /* FullEElec.cpp in Sources */,
 				404397221D42A1DC00CA0FCA /* FullEElec_LinkDef.h in Sources */,
+				40F2609D1D42D10200B8A096 /* FullEE_Histos.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -254,13 +262,23 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -297,13 +315,23 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";

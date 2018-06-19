@@ -48,7 +48,7 @@ void FEESelector::Set_Engineering2015(void){
 ///
 bool FEESelector::Select(int np){
   HpsParticle *part=base->GetParticle(np);
-  Select(part);
+  return(Select(part));
 }
 
 ///

@@ -11,5 +11,3 @@ Features:
 * Can be run with the Run() method.
 ** Makes it easier to debug your own analysis in a debugger by creating a mini application.
 
-
-

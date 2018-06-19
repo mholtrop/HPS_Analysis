@@ -553,7 +553,7 @@ void BaseAna::FancyPlot(TH2F *histo,int opt){
     ones_lb->Clear();
   }
   
-  if(! opt& 0x4 ) histo->SetMaximum();
+  if(!(opt& 0x4) ) histo->SetMaximum();
   if(histo->GetMaximum() < 1){
     histo->SetMaximum(1.1);
   }
