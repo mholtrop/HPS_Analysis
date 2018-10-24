@@ -32,19 +32,12 @@ int main(int argc, const char * argv[]) {
   SimAna *sa=new SimAna(file);
   sa->fCounter_Freq=1000;
   sa->Run();
-//  while(sa->getNEcalHits()<5) sa->Next();
-//  sa->Print(0x01);
-//  sa->Print(0x04);
-//  sa->Print(0x08);
   //sa->Write();
   //f->Write();
   //f->Close();
-  sa->Write();
+  //sa->Write();
   f->Write();
   f->Close();
-  delete f;
-  f=new TFile(file_out.c_str());
-  SimAna *s2=(SimAna *)f->Get("SimAna");
   
   return 0;
 }

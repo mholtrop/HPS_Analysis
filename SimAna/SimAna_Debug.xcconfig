@@ -8,5 +8,14 @@
 
 #include "SimAna.xcconfig"
 
-GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 GCC_OPTIMIZATION_LEVEL = 0
+COPY_PHASE_STRIP = NO
+GCC_GENERATE_DEBUGGING_SYMBOLS = YES
+STRIP_INSTALLED_PRODUCT = NO
+
+// DEBUG VERSION OF ROOT ===============================
+// ======= ROOT 6 ==============
+ROOTSYS=/Users/maurik/root/root.git.debug
+ROOTLIBS=-L${ROOTSYS}/lib -lCore -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -lProof -lpthread -stdlib=libc++ -lm -ldl
+CLANG_CXX_LANGUAGE_STANDARD = c++11
+

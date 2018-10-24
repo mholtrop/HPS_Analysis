@@ -2,12 +2,23 @@
 //  SimAna.xcconfig
 //  SimAna
 //
-//  Created by Maurik Holtrop on 5/20/16.
-//  Copyright © 2016 Maurik. All rights reserved.
-//
-
 PRODUCT_NAME=SimAna
+// Deployment location, if YES place products in DSTROOT, else in SYMROOT
+DEPLOYMENT_LOCATION=YES
+DEPLOYMENT_POSTPROCESSING = YES
+//SYMROOT or DSTROOT: The FULL path at which all products will be placed when performing a build.
+SYMROOT=/Users/maurik/Documents/Analysis/HPS_Analysis
 DSTROOT=/Users/maurik/Documents/Analysis/HPS_Analysis
+EXECUTABLE_PREFIX=lib
+EXECUTABLE_EXTENSION = dylib
+INSTALL_PATH=/${CONFIGURATION}/
+DYLIB_INSTALL_NAME_BASE=${DSTROOT}/${CONFIGURATION}
+DYLIB_COMPATIBILITY_VERSION=1.0
+DYLIB_CURRENT_VERSION=1.0
+
+// To find the other libraries 
+LD_RUNPATH_SEARCH_PATHS=$(DYLIB_INSTALL_NAME_BASE:standardizepath)
+
 
 // ======= ROOT 6 ==============
 ROOTSYS=/Users/maurik/root/root.git
@@ -15,13 +26,19 @@ ROOTLIBS=-L${ROOTSYS}/lib -lCore -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTre
 CLANG_CXX_LANGUAGE_STANDARD = c++11
 
 // ======== LCIO ===========
-LCIO=/data/HPS
-LCIO_LIBS= -L${LCIO}/lib -llcio
+//LCIO=/data/HPS
+//LCIO_LIBS= -L${LCIO}/lib -llcio
+LCIO=/data/HPS/lcio
+LCIO_LIBS= -L${LCIO}/build/${CONFIGURATION} -llcio
+
+// ====== HpsEvent ======
+HpsEvent_DIR=${DSTROOT}/${CONFIGURATION}
+HpsEvent_LIBS= -L${HpsEvent_DIR} -lHpsEvent
 
 HPSDST=${DSTROOT}/hps-dst
 BASEANA=${DSTROOT}/BaseAna
 
-// ${HPSDST}/include/hps_event
+// Requires the LCIO to be installed with (cd cbuild; make install) to create the include dir.
 HEADER_SEARCH_PATHS=  ${HPSDST}/include/hps_event ${LCIO}/include  ${ROOTSYS}/include
 LIBRARY_SEARCH_PATHS=${ROOTSYS}/lib 
 
@@ -32,20 +49,6 @@ GCC_WARN_UNUSED_VARIABLE = YES;
 GCC_INLINES_ARE_PRIVATE_EXTERN=NO
 GCC_SYMBOLS_PRIVATE_EXTERN = NO
 
-EXECUTABLE_EXTENSION = dylib
-INSTALL_PATH=/${CONFIGURATION}
-DYLIB_INSTALL_NAME_BASE=${DSTROOT}/${INSTALL_PATH}
-LD_DYLIB_INSTALL_NAME = $(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_NAME)
-
-EXECUTABLE_PREFIX=${DSTROOT}/${INSTALL_PATH}
-
-// To find the other libraries 
-LD_RUNPATH_SEARCH_PATHS=$(DYLIB_INSTALL_NAME_BASE:standardizepath)
-
 // -L${DSTROOT}/${CONFIGURATION}
-OTHER_LDFLAGS= ${ROOTLIBS} ${LCIO_LIBS}
+OTHER_LDFLAGS= ${ROOTLIBS} ${LCIO_LIBS} ${HpsEvent_LIBS}
 OTHER_CPLUSPLUSFLAGS =  -fPIC -stdlib=libc++
-
-DEPLOYMENT_LOCATION = YES
-DEPLOYMENT_POSTPROCESSING = YES
-

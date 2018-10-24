@@ -9,7 +9,7 @@ ClassImp(SimAna);
 
 SimAna::SimAna(){
   SetName("SimAna");
-  SetTitle("LCIO output analyzer.");
+    SetTitle("LCIO output analyzer.");
  }
 
 SimAna::SimAna(string lcio_file_name, bool direct_access){
@@ -52,9 +52,12 @@ void SimAna::Init(const string lcio_file_name, bool direct_access){
   N_TrackerHitsEcal->SetXTitle("Number of hits");
   
   Ecal_Hit_Energy = new TH1F("Ecal_Hit_Energy","Ecal Hit energy",2300,0.,2.3);
-  Ecal_Hit_Energy_sum = new TH1F("Ecal_Hit_Energy_sum","Ecal Hit energy",2300,0.,2.3);
   Ecal_Hit_Energy->SetXTitle("Energy (GeV)");
+  Ecal_Hit_CE     = new TH1F("Ecal_Hit_CE","Ecal Hit Contributor energy",2300,0.,2.3);
+  Ecal_Hit_CE->SetXTitle("Energy (GeV)");
+  Ecal_Hit_Energy_sum = new TH1F("Ecal_Hit_Energy_sum","Ecal Hit energy sum",2300,0.,2.3);
   Ecal_Hit_Energy_sum->SetXTitle("Energy (GeV)");
+  
   int ecal_nx=23;
   int ecal_ny=5;
   Ecal_Hits_Loc = new TH2F("Ecal_Hits_Loc","Ecal Hits",(ecal_nx+1)*2+1,-ecal_nx-1.5,ecal_nx+2-0.5,(ecal_ny+1)*2+1,-ecal_ny-1.5,ecal_ny+1.5);
@@ -63,7 +66,18 @@ void SimAna::Init(const string lcio_file_name, bool direct_access){
   Ecal_Hits_Loc_E = new TH2F("Ecal_Hits_Loc_E","Ecal Hits with E>50MeV",(ecal_nx+1)*2+1,-ecal_nx-1.5,ecal_nx+2-0.5,(ecal_ny+1)*2+1,-ecal_ny-1.5,ecal_ny+1.5);
   Ecal_Hits_Loc_E->SetXTitle("x-index");
   Ecal_Hits_Loc_E->SetYTitle("y-index");
+  
+  Ecal_Hit_CNT  = new TH1F("Ecal_Hit_CNT","Num of Ecal hit contributions;N;counts",1000,0.,1000.);
+  Ecal_Hit_Time = new TH1F("Ecal_Hit_Time","Ecal hit time;time;counts",1000,-1000.,1000.);
+  Ecal_Hit_TimeAve = new TH1F("Ecal_Hit_TimeAve","Ecal hit time average per event;time;counts",1000,-1000.,1000.);
+  Ecal_Hit_TimeRel = new TH1F("Ecal_Hit_TimeRel","Ecal hit time relative to average;time;counts",1000,-2000.,1000.);
 
+  Ecal_Hit_CNT_ecut  = new TH1F("Ecal_Hit_CNT_ecut","Num of Ecal hit contributions;N;counts",1000,0.,5000.);
+  Ecal_Hit_Time_ecut = new TH1F("Ecal_Hit_Time_ecut","Ecal hit time;time;counts",1000,-1000.,1000.);
+  Ecal_Hit_TimeAve_ecut = new TH1F("Ecal_Hit_TimeAve_ecut","Ecal hit time average per event;time;counts",1000,-1000.,1000.);
+  Ecal_Hit_TimeRel_ecut = new TH1F("Ecal_Hit_TimeRel_ecut","Ecal hit time relative to average;time;counts",1000,-2000.,1000.);
+
+  
   // ==== Tracker
   Tracker_Hit_Energy = new TH1F("Tracker_Hit_Energy","SVT Hit Energy Deposited",1000,0.,0.01);
   Tracker_Hit_Energy->SetXTitle("Energy (GeV)");
@@ -106,10 +120,10 @@ void SimAna::FillHistos(void){
   N_TrackerHits->Fill(getNTrackerHits());
   N_TrackerHitsEcal->Fill(getNTrackerHitsEcal());
   
-  //===== ECAL Hits ======
+  //========== ECAL Hits ==============
   int cnt=0;
   if(getNEcalHits()>0){
-    EVENT::CalorimeterHit *calorimeter_hit;
+    IMPL::SimCalorimeterHitImpl *calorimeter_hit;
     LCCollection *ecal_hits=static_cast<LCCollection *>(evt->getCollection("EcalHits"));
     double energy_sum=0;
     for(int n=0; n<ecal_hits->getNumberOfElements();++n){
@@ -121,8 +135,55 @@ void SimAna::FillHistos(void){
         cnt++;
         Ecal_Hits_Loc_E->Fill(GetEcalHit_ix(calorimeter_hit),GetEcalHit_iy(calorimeter_hit));
       }
+      int num_elem=calorimeter_hit->getNMCContributions();
+      Ecal_Hit_CNT->Fill(num_elem);
+      double time_sum=0;
+      double time_sum_ecut=0;
+
+      int count_e_cut=0;
+      for (int nt=0; nt<num_elem;++nt){
+        double cal_energy = calorimeter_hit->getEnergyCont(nt);
+        double cal_time=calorimeter_hit->getTimeCont(nt);
+        Ecal_Hit_CE->Fill(cal_energy);
+        Ecal_Hit_Time->Fill(cal_time);
+        if(cal_energy>0.001){
+          count_e_cut++;
+          Ecal_Hit_Time_ecut->Fill(cal_time);
+          time_sum_ecut += cal_time;
+        }
+        time_sum += cal_time;
+      }
+      
+      if(num_elem>0){
+        double time_ave = time_sum/num_elem;
+        Ecal_Hit_TimeAve->Fill(time_ave);
+        for (int nt=0; nt<num_elem;++nt){
+          double cal_time=calorimeter_hit->getTimeCont(nt);
+          double rel_time = cal_time - time_ave;
+          Ecal_Hit_TimeRel->Fill(rel_time);
+        }
+      }else{
+        std::cout << "Error: not hit time, but there are hits. Nhits = " << num_elem << std::endl;
+        Ecal_Hit_TimeAve->Fill(time_sum);
+      }
+      
+      
+      
+      Ecal_Hit_CNT_ecut->Fill(count_e_cut);
+      if(count_e_cut>0){
+        double time_ave_ecut = time_sum_ecut/count_e_cut;
+        Ecal_Hit_TimeAve_ecut->Fill(time_ave_ecut);
+        for (int nt=0; nt<num_elem;++nt){
+          if(calorimeter_hit->getEnergyCont(nt)>0.001){
+            double cal_time=calorimeter_hit->getTimeCont(nt);
+            double rel_time = cal_time - time_ave_ecut;
+            Ecal_Hit_TimeRel_ecut->Fill(rel_time);
+          }
+        }
+      }
     }
     Ecal_Hit_Energy_sum->Fill(energy_sum);
+    
     N_EcalHits_E->Fill(cnt);
   }
   
@@ -199,7 +260,11 @@ bool SimAna::Next(void){
 
 void SimAna::OpenLCIO(const string file){
 // Open an LCIO file for processing
-  lc_reader->open(file);
+  if( lc_reader != nullptr){
+    lc_reader->open(file);
+  }else{
+    Init(file,false);
+  }
 }
 
 int SimAna::getN(string name){
@@ -345,7 +410,7 @@ TH2F *SimAna::EcalHitMap(void){
   }
   
   for(int nhit=0;nhit<getNEcalHits();++nhit){
-    EVENT::CalorimeterHit *hit= GetEcalHit(nhit);
+    IMPL::SimCalorimeterHitImpl *hit= GetEcalHit(nhit);
     int xhit=GetEcalHit_ix(hit);
     int yhit=GetEcalHit_iy(hit);
     //   xhit = (xhit>=0?xhit:xhit+1);
