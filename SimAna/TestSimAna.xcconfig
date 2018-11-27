@@ -1,0 +1,16 @@
+//
+//  TestSimAna.xcconfig
+//  SimAna
+//
+//  Created by Maurik Holtrop on 7/11/16.
+//  Copyright © 2016 Maurik. All rights reserved.
+//
+#include "SimAna.xcconfig"
+PRODUCT_NAME=SimAna
+EXECUTABLE_PREFIX=
+GCC_OPTIMIZATION_LEVEL = 0
+COPY_PHASE_STRIP = NO
+GCC_GENERATE_DEBUGGING_SYMBOLS = YES
+STRIP_INSTALLED_PRODUCT = NO
+
+

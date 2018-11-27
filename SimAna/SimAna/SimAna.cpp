@@ -39,33 +39,25 @@ void SimAna::Init(const string lcio_file_name, bool direct_access){
   OpenLCIO(lcio_file_name);
   
   // ====== Book Histograms ========
-  N_EcalHits = new TH1F("N_EcalHits","Number of ECAL Hits",100,0,99);
-  N_EcalHits->SetXTitle("Number of hits");
-  N_EcalHits_E= new TH1F("N_EcalHits_E","Number of ECAL Hits with E>50MeV",100,0,99);
-  N_EcalHits_E->SetXTitle("Number of hits");
-
-  N_MCParticle = new TH1F("N_MCParticle","Number of MC Particles",200,0,199);
-  N_MCParticle->SetXTitle("Number of particles");
-  N_TrackerHits = new TH1F("N_TrackerHits","Number of Tracker Hits",100,0,99);
-  N_TrackerHits->SetXTitle("Number of hits");
-  N_TrackerHitsEcal = new TH1F("N_TrackerHitsEcal","Number of Tracker Hits Ecal",100,0,99);
-  N_TrackerHitsEcal->SetXTitle("Number of hits");
   
-  Ecal_Hit_Energy = new TH1F("Ecal_Hit_Energy","Ecal Hit energy",2300,0.,2.3);
-  Ecal_Hit_Energy->SetXTitle("Energy (GeV)");
-  Ecal_Hit_CE     = new TH1F("Ecal_Hit_CE","Ecal Hit Contributor energy",2300,0.,2.3);
-  Ecal_Hit_CE->SetXTitle("Energy (GeV)");
-  Ecal_Hit_Energy_sum = new TH1F("Ecal_Hit_Energy_sum","Ecal Hit energy sum",2300,0.,2.3);
-  Ecal_Hit_Energy_sum->SetXTitle("Energy (GeV)");
+  // ====== ECAL
+  N_EcalHits = new TH1F("N_EcalHits","Number of ECAL Hits;Number of hits",100,0,99);
+  N_EcalHits_E= new TH1F("N_EcalHits_E","Number of ECAL Hits with E>50MeV;Number of hits",100,0,99);
+
+  N_MCParticle = new TH1F("N_MCParticle","Number of MC Particles;Number of particles",200,0,199);
+  E_MCParticle = new TH1F("E_MCParticle","Energy of MC Particle;E (GeV);count",1000,0.,2.4);
+  E_MCParticle2 = new TH1F("E_MCParticle2","Energy of MC Particle;E (GeV);count",1000,0.,0.01);
+  N_TrackerHits = new TH1F("N_TrackerHits","Number of Tracker Hits;Number of hits",100,0,99);
+  N_TrackerHitsEcal = new TH1F("N_TrackerHitsEcal","Number of Tracker Hits Ecal;Number of hits",100,0,99);
+  
+  Ecal_Hit_Energy = new TH1F("Ecal_Hit_Energy","Ecal Hit energy;Energy (GeV)",2300,0.,2.3);
+  Ecal_Hit_CE     = new TH1F("Ecal_Hit_CE","Ecal Hit Contributor energy;Energy (GeV)",2300,0.,2.3);
+  Ecal_Hit_Energy_sum = new TH1F("Ecal_Hit_Energy_sum","Ecal Hit energy sum;Energy (GeV)",2300,0.,2.3);
   
   int ecal_nx=23;
   int ecal_ny=5;
-  Ecal_Hits_Loc = new TH2F("Ecal_Hits_Loc","Ecal Hits",(ecal_nx+1)*2+1,-ecal_nx-1.5,ecal_nx+2-0.5,(ecal_ny+1)*2+1,-ecal_ny-1.5,ecal_ny+1.5);
-  Ecal_Hits_Loc->SetXTitle("x-index");
-  Ecal_Hits_Loc->SetYTitle("y-index");
-  Ecal_Hits_Loc_E = new TH2F("Ecal_Hits_Loc_E","Ecal Hits with E>50MeV",(ecal_nx+1)*2+1,-ecal_nx-1.5,ecal_nx+2-0.5,(ecal_ny+1)*2+1,-ecal_ny-1.5,ecal_ny+1.5);
-  Ecal_Hits_Loc_E->SetXTitle("x-index");
-  Ecal_Hits_Loc_E->SetYTitle("y-index");
+  Ecal_Hits_Loc = new TH2F("Ecal_Hits_Loc","Ecal Hits;x-index;y-index",(ecal_nx+1)*2+1,-ecal_nx-1.5,ecal_nx+2-0.5,(ecal_ny+1)*2+1,-ecal_ny-1.5,ecal_ny+1.5);
+  Ecal_Hits_Loc_E = new TH2F("Ecal_Hits_Loc_E","Ecal Hits with E>50MeV;x-index;y-index",(ecal_nx+1)*2+1,-ecal_nx-1.5,ecal_nx+2-0.5,(ecal_ny+1)*2+1,-ecal_ny-1.5,ecal_ny+1.5);
   
   Ecal_Hit_CNT  = new TH1F("Ecal_Hit_CNT","Num of Ecal hit contributions;N;counts",1000,0.,1000.);
   Ecal_Hit_Time = new TH1F("Ecal_Hit_Time","Ecal hit time;time;counts",1000,-1000.,1000.);
@@ -77,18 +69,19 @@ void SimAna::Init(const string lcio_file_name, bool direct_access){
   Ecal_Hit_TimeAve_ecut = new TH1F("Ecal_Hit_TimeAve_ecut","Ecal hit time average per event;time;counts",1000,-1000.,1000.);
   Ecal_Hit_TimeRel_ecut = new TH1F("Ecal_Hit_TimeRel_ecut","Ecal hit time relative to average;time;counts",1000,-2000.,1000.);
 
-  
+  // ====== Hodoscope
+  N_HodoHits = new TH1F("N_HodoHits","Number of Hodoscope Hits;Number of Hits",100,0,99);
+  Hodo_Hit_Energy = new TH1F("Hodo_Hit_Energy","Energy of Hodoscope Hit;Energy (GeV)",1000,0.,0.05);
+  Hodo_Hit_CNT  = new TH1F("Hodo_Hit_CNT","Num of Hodoscope hit contributions;N;counts",20,0.,20.);
+  Hodo_Hit_CE     = new TH1F("Hodo_Hit_CE","Hodo Hit Contributor energy;Energy (GeV)",2300,0.,0.01);
+  Hodo_Hit_Time = new TH1F("Hodo_Hit_Time","Hodo hit time;time;counts",610*4,-10.,600.);
+
   // ==== Tracker
-  Tracker_Hit_Energy = new TH1F("Tracker_Hit_Energy","SVT Hit Energy Deposited",1000,0.,0.01);
-  Tracker_Hit_Energy->SetXTitle("Energy (GeV)");
-  Tracker_Hit_PathLength= new TH1F("Tracker_Hit_PathLength","Tracker Hit Path Length",1000,0.32,0.33);
-  Tracker_Hit_PathLength->SetXTitle("L (mm)");
-  Tracker_Hit_Px = new TH1F("Tracker_Hit_Px","Tracker Hit x Momentum",1000,0.,0.1);
-  Tracker_Hit_Px->SetXTitle("Px (GeV/c)");
-  Tracker_Hit_Py = new TH1F("Tracker_Hit_Py","Tracker Hit y Momentum",1000,0.,0.15);
-  Tracker_Hit_Py->SetXTitle("Py (GeV/c)");
-  Tracker_Hit_Pz = new TH1F("Tracker_Hit_Pz","Tracker Hit z Momentum",1000,0.,2.3);
-  Tracker_Hit_Pz->SetXTitle("Pz (GeV/c)");
+  Tracker_Hit_Energy = new TH1F("Tracker_Hit_Energy","SVT Hit Energy Deposited;Energy (GeV)",1000,0.,0.01);
+  Tracker_Hit_PathLength= new TH1F("Tracker_Hit_PathLength","Tracker Hit Path Length;L (mm)",1000,0.32,0.33);
+  Tracker_Hit_Px = new TH1F("Tracker_Hit_Px","Tracker Hit x Momentum;Px (GeV/c)",1000,0.,0.1);
+  Tracker_Hit_Py = new TH1F("Tracker_Hit_Py","Tracker Hit y Momentum;Py (GeV/c)",1000,0.,0.15);
+  Tracker_Hit_Pz = new TH1F("Tracker_Hit_Pz","Tracker Hit z Momentum;Pz (GeV/c)",1000,0.,2.3);
 
 }
 
@@ -116,9 +109,23 @@ void SimAna::FillHistos(void){
   // This is where the work is done.
   
   N_EcalHits->Fill(getNEcalHits());
+  N_HodoHits->Fill(getNHodoHits());
   N_MCParticle->Fill(getNMCParticle());
   N_TrackerHits->Fill(getNTrackerHits());
   N_TrackerHitsEcal->Fill(getNTrackerHitsEcal());
+  
+  // ========= MCParticle ==============
+  
+  if(getNMCParticle()>0){
+    IMPL::MCParticleImpl *mcp;
+    LCCollection *mc_particles = static_cast<LCCollection *>(evt->getCollection("MCParticle"));
+    for(int i=0;i<mc_particles->getNumberOfElements();++i){
+      mcp = GetMCParticle(i,mc_particles);
+      E_MCParticle->Fill(mcp->getEnergy());
+      E_MCParticle2->Fill(mcp->getEnergy());
+    }
+  }
+  
   
   //========== ECAL Hits ==============
   int cnt=0;
@@ -166,9 +173,7 @@ void SimAna::FillHistos(void){
         std::cout << "Error: not hit time, but there are hits. Nhits = " << num_elem << std::endl;
         Ecal_Hit_TimeAve->Fill(time_sum);
       }
-      
-      
-      
+
       Ecal_Hit_CNT_ecut->Fill(count_e_cut);
       if(count_e_cut>0){
         double time_ave_ecut = time_sum_ecut/count_e_cut;
@@ -185,6 +190,25 @@ void SimAna::FillHistos(void){
     Ecal_Hit_Energy_sum->Fill(energy_sum);
     
     N_EcalHits_E->Fill(cnt);
+  }
+  
+//========== Hodoscope Hits ==============
+  cnt=0;
+  if(getNHodoHits()>0){
+    IMPL::SimCalorimeterHitImpl *hodo_hit;
+    LCCollection *hodo_hits=static_cast<LCCollection *>(evt->getCollection("HodoscopeHits"));
+    for(int n=0; n<hodo_hits->getNumberOfElements();++n){
+      hodo_hit = GetHodoHit(n,hodo_hits);
+      Hodo_Hit_Energy->Fill(hodo_hit->getEnergy());
+      int num_elem=hodo_hit->getNMCContributions();
+      Hodo_Hit_CNT->Fill(num_elem);
+      for (int nt=0; nt<num_elem;++nt){
+        double hodo_energy = hodo_hit->getEnergyCont(nt);
+        Hodo_Hit_CE->Fill(hodo_energy);
+        double hodo_time=    hodo_hit->getTimeCont(nt);
+        Hodo_Hit_Time->Fill(hodo_time);
+      }
+    }
   }
   
 //  //===== Tracker Hits =====
@@ -268,7 +292,7 @@ void SimAna::OpenLCIO(const string file){
 }
 
 int SimAna::getN(string name){
-// Return the number of "" Hits in the current event.
+// Return the number of "name" Hits in the current event.
   try{
     LCCollection *hits=static_cast<LCCollection *>(evt->getCollection(name));
     if(hits){

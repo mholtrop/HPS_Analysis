@@ -33,6 +33,7 @@
 #include "EVENT/LCCollection.h"
 #include "IMPL/LCTOOLS.h"
 //#include "EVENT/CalorimeterHit.h"
+#include <IMPL/MCParticleImpl.h>
 #include "IMPL/SimCalorimeterHitImpl.h"
 //#include "EVENT/SimCalorimeterHit.h"
 #include "EVENT/SimTrackerHit.h"
@@ -54,6 +55,8 @@ public:
   TH1F *N_EcalHits=nullptr;
   TH1F *N_EcalHits_E=nullptr;
   TH1F *N_MCParticle=nullptr;
+  TH1F *E_MCParticle=nullptr;
+  TH1F *E_MCParticle2=nullptr;
   TH1F *N_TrackerHits=nullptr;
   TH1F *N_TrackerHitsEcal=nullptr;
   
@@ -73,7 +76,12 @@ public:
   TH1F *Ecal_Hit_TimeAve_ecut= nullptr;
   TH1F *Ecal_Hit_TimeRel_ecut= nullptr;
 
-  
+  // Hodoscope
+  TH1F *N_HodoHits = nullptr;
+  TH1F *Hodo_Hit_Energy = nullptr;
+  TH1F *Hodo_Hit_CNT = nullptr;
+  TH1F *Hodo_Hit_CE  = nullptr;
+  TH1F *Hodo_Hit_Time = nullptr;
   
   // Tracker Info
   TH1F *Tracker_Hit_Energy=nullptr;
@@ -112,6 +120,9 @@ public:
   int  getNEcalHits(void){
     return( getN("EcalHits"));
   };
+  int  getNHodoHits(void){
+    return( getN("HodoscopeHits"));
+  };
   int  getNMCParticle(void){
     return( getN("MCParticle"));
   };
@@ -119,21 +130,24 @@ public:
     return( getN("TrackerHits"));
   };
   int  getNTrackerHitsEcal(void){
-    return( getN("TrackerHitsEcal"));
+    return( getN("TrackerHitsECal"));
   };
   
+  // ==== MCParticles ====
+IMPL::MCParticleImpl *GetMCParticle(int n,LCCollection *col=nullptr){
+  if(col==nullptr) col=static_cast<LCCollection *>(evt->getCollection("MCParticle"));
+  return( (IMPL::MCParticleImpl *)col->getElementAt(n));
+}
+  
   // ==== ECAL =====
-  //EVENT::CalorimeterHit *GetEcalHit(int n,LCCollection *col=nullptr){
   IMPL::SimCalorimeterHitImpl *GetEcalHit(int n,LCCollection *col=nullptr){
     // Get the N-th ecal hit from the collection.
     if(col==nullptr) col=static_cast<LCCollection *>(evt->getCollection("EcalHits"));
     return((IMPL::SimCalorimeterHitImpl *)col->getElementAt(n));
   }
 
-  //EVENT::CalorimeterHit *Cast_to_CalorimeterHit(EVENT::SimCalorimeterHit *hit){
   IMPL::SimCalorimeterHitImpl *Cast_to_CalorimeterHit(EVENT::SimCalorimeterHit *hit){
     LCObject *oo = (LCObject *)hit;
-   // return( (EVENT::CalorimeterHit *)oo);
     return( (IMPL::SimCalorimeterHitImpl *) oo);
   }
   
@@ -149,6 +163,15 @@ public:
     int iy= (int)((id0& 0x3F0000LL)>> 16);
     return( (iy&0x20?iy-0x40:iy) ); // Use the high bit as sign. If set, then iy = iy - (iy_max+1)
   }
+
+  // ==== Hodoscope =====
+  IMPL::SimCalorimeterHitImpl *GetHodoHit(int n,LCCollection *col=nullptr){
+    // Get the N-th hodoscope hit from the collection.
+    if(col==nullptr) col=static_cast<LCCollection *>(evt->getCollection("HodoscopeHits"));
+    return((IMPL::SimCalorimeterHitImpl *)col->getElementAt(n));
+  }
+
+  
   
   //========= Tracker =========
   

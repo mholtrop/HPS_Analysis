@@ -14,7 +14,7 @@ int main(int argc, const char * argv[]) {
   std::cout << "TestPiZero Code start...\n";
   
   TChain *ch = new TChain("HPS_Event");
-  ch->Add("/data/HPS/engrun2015/pass6/dst/hps_*.root");
+  ch->Add("/data/HPS/data/engrun2015/pass6/dst/hps_*.root");
   cout << "Number of events = " << ch->GetEntries() << endl;
   
   PiZero *pz=new PiZero(ch);

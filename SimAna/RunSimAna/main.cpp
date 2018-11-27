@@ -36,6 +36,7 @@ int main(int argc, const char * argv[]) {
   //f->Write();
   //f->Close();
   //sa->Write();
+  f->ls();
   f->Write();
   f->Close();
   
