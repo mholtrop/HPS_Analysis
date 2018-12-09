@@ -7,8 +7,8 @@ PRODUCT_NAME=SimAna
 DEPLOYMENT_LOCATION=YES
 DEPLOYMENT_POSTPROCESSING = YES
 //SYMROOT or DSTROOT: The FULL path at which all products will be placed when performing a build.
-SYMROOT=/Users/maurik/Documents/Analysis/HPS_Analysis
-DSTROOT=/Users/maurik/Documents/Analysis/HPS_Analysis
+SYMROOT=/data/HPS/HPS_Analysis
+DSTROOT=/data/HPS/HPS_Analysis
 EXECUTABLE_PREFIX=lib
 EXECUTABLE_EXTENSION = dylib
 INSTALL_PATH=/${CONFIGURATION}/

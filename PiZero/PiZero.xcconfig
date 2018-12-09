@@ -7,7 +7,7 @@
 //
 
 PRODUCT_NAME=PiZero
-DSTROOT=/Users/maurik/Documents/Analysis/HPS_Analysis
+DSTROOT=/data/HPS/HPS_Analysis
 
 // ======= ROOT 6 ==============
 ROOTSYS=/Users/maurik/root/root.git
