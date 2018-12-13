@@ -8,4 +8,4 @@
 #include "TemplateClassX.xcconfig"
 PRODUCT_NAME=TestTemplateClassX
 EXECUTABLE_PREFIX=
-INSTALL_PATH=/bin
+

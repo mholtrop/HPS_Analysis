@@ -34,27 +34,6 @@
 		};
 /* End PBXBuildRule section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		402314831D074AEB00396BE5 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 6;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		40F5E00D1D3467A4006D7BC0 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		401A55371D0A0F450017AE2C /* libHpsEvent.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libHpsEvent.dylib; path = ../Release/libHpsEvent.dylib; sourceTree = "<group>"; };
 		40BE711C1CEF9030002ADB25 /* libFullEElec.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libFullEElec.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -167,7 +146,7 @@
 				40BE71181CEF9030002ADB25 /* Sources */,
 				40BE71191CEF9030002ADB25 /* Frameworks */,
 				40BE711A1CEF9030002ADB25 /* Headers */,
-				402314831D074AEB00396BE5 /* CopyFiles */,
+				40D3FFED21C3009E00381AF5 /* ShellScript */,
 			);
 			buildRules = (
 				40BE71321CEFAC91002ADB25 /* PBXBuildRule */,
@@ -185,7 +164,7 @@
 			buildPhases = (
 				40F5E00B1D3467A4006D7BC0 /* Sources */,
 				40F5E00C1D3467A4006D7BC0 /* Frameworks */,
-				40F5E00D1D3467A4006D7BC0 /* CopyFiles */,
+				40D3FFEE21C3010800381AF5 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -230,6 +209,45 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		40D3FFED21C3009E00381AF5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Copy ${FULL_PRODUCT_NAME} to final destination.\"\ncp -v ${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME} ${INSTALL_DIR}\ncp -v ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}Dict_rdict.pcm ${INSTALL_DIR}\n";
+			showEnvVarsInLog = 0;
+		};
+		40D3FFEE21C3010800381AF5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Copy to final destination.\"\ncp -v ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME} ${INSTALL_DIR}\necho ${PRODUCT_NAME}\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		40BE71181CEF9030002ADB25 /* Sources */ = {

@@ -3,15 +3,15 @@
 //  SimAna
 //
 PRODUCT_NAME=SimAna
-// Deployment location, if YES place products in DSTROOT, else in SYMROOT
-DEPLOYMENT_LOCATION=YES
-DEPLOYMENT_POSTPROCESSING = YES
-//SYMROOT or DSTROOT: The FULL path at which all products will be placed when performing a build.
-SYMROOT=/data/HPS/HPS_Analysis
-DSTROOT=/data/HPS/HPS_Analysis
+HPS_ANALYSIS_DIR=/data/HPS/HPS_Analysis
+HPSDST=${HPS_ANALYSIS_DIR}/hps-dst
+BASEANA=${HPS_ANALYSIS_DIR}/BaseAna
+INSTALL_PATH=${HPS_ANALYSIS_DIR}/${CONFIGURATION}
+INSTALL_DIR=${HPS_ANALYSIS_DIR}/${CONFIGURATION}
+
 EXECUTABLE_PREFIX=lib
 EXECUTABLE_EXTENSION = dylib
-INSTALL_PATH=/${CONFIGURATION}/
+
 DYLIB_INSTALL_NAME_BASE=${DSTROOT}/${CONFIGURATION}
 DYLIB_COMPATIBILITY_VERSION=1.0
 DYLIB_CURRENT_VERSION=1.0
@@ -34,9 +34,6 @@ LCIO_LIBS= -L${LCIO}/build/${CONFIGURATION} -llcio
 // ====== HpsEvent ======
 HpsEvent_DIR=${DSTROOT}/${CONFIGURATION}
 HpsEvent_LIBS= -L${HpsEvent_DIR} -lHpsEvent
-
-HPSDST=${DSTROOT}/hps-dst
-BASEANA=${DSTROOT}/BaseAna
 
 // Requires the LCIO to be installed with (cd cbuild; make install) to create the include dir.
 HEADER_SEARCH_PATHS=  ${HPSDST}/include/hps_event ${LCIO}/include  ${ROOTSYS}/include

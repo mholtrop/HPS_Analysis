@@ -40,27 +40,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		402314831D074AEB00396BE5 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 6;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		40F5E00D1D3467A4006D7BC0 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		4043FFC420D9049800F4D9EE /* libHpsEvent.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libHpsEvent.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		40BE711C1CEF9030002ADB25 /* libSimAna.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libSimAna.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,7 +49,7 @@
 		40BE712C1CEF9279002ADB25 /* SimAna.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SimAna.xcconfig; sourceTree = "<group>"; };
 		40BE712D1CEF9346002ADB25 /* SimAna_Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SimAna_Debug.xcconfig; sourceTree = "<group>"; };
 		40BE712E1CEF936F002ADB25 /* SimAna_Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SimAna_Release.xcconfig; sourceTree = "<group>"; };
-		40F5E00F1D3467A4006D7BC0 /* SimAna */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SimAna; sourceTree = BUILT_PRODUCTS_DIR; };
+		40F5E00F1D3467A4006D7BC0 /* RunSimAna */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = RunSimAna; sourceTree = BUILT_PRODUCTS_DIR; };
 		40F5E0111D3467A4006D7BC0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		40F5E0171D346922006D7BC0 /* TestSimAna.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = TestSimAna.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -117,7 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				40BE711C1CEF9030002ADB25 /* libSimAna.dylib */,
-				40F5E00F1D3467A4006D7BC0 /* SimAna */,
+				40F5E00F1D3467A4006D7BC0 /* RunSimAna */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -173,7 +152,7 @@
 				40BE71181CEF9030002ADB25 /* Sources */,
 				40BE71191CEF9030002ADB25 /* Frameworks */,
 				40BE711A1CEF9030002ADB25 /* Headers */,
-				402314831D074AEB00396BE5 /* CopyFiles */,
+				40D3FFF121C3024C00381AF5 /* ShellScript */,
 			);
 			buildRules = (
 				40BE71321CEFAC91002ADB25 /* PBXBuildRule */,
@@ -189,10 +168,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 40F5E0151D3467A4006D7BC0 /* Build configuration list for PBXNativeTarget "RunSimAna" */;
 			buildPhases = (
-				402E1D6421595C580046AC4F /* DumpXcodeVars */,
 				40F5E00B1D3467A4006D7BC0 /* Sources */,
 				40F5E00C1D3467A4006D7BC0 /* Frameworks */,
-				40F5E00D1D3467A4006D7BC0 /* CopyFiles */,
+				40D3FFF221C3026E00381AF5 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -201,7 +179,7 @@
 			);
 			name = RunSimAna;
 			productName = TestSimAna;
-			productReference = 40F5E00F1D3467A4006D7BC0 /* SimAna */;
+			productReference = 40F5E00F1D3467A4006D7BC0 /* RunSimAna */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -255,19 +233,40 @@
 			shellPath = /bin/bash;
 			shellScript = "export\n";
 		};
-		402E1D6421595C580046AC4F /* DumpXcodeVars */ = {
+		40D3FFF121C3024C00381AF5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
+			inputFileListPaths = (
+			);
 			inputPaths = (
 			);
-			name = DumpXcodeVars;
+			outputFileListPaths = (
+			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/bash;
-			shellScript = export;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Copy ${FULL_PRODUCT_NAME} to final destination.\"\ncp -v ${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME} ${INSTALL_DIR}\ncp -v ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}Dict_rdict.pcm ${INSTALL_DIR}\n\n";
+		};
+		40D3FFF221C3026E00381AF5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Copy to final destination.\"\ncp -v ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME} ${INSTALL_DIR}\necho ${PRODUCT_NAME}\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 

@@ -30,7 +30,7 @@
 				"$(DERIVED_FILE_DIR)/${PRODUCT_MODULE_NAME}Dict_rdict.pcm",
 				"$(DERIVED_FILE_DIR)/${PRODUCT_MODULE_NAME}Dict.cpp",
 			);
-			script = "#\n# Script to create the dictionary for a multi class LinkDef file.\n# The names of the header files are extracted from the LinkDef file.\n# The name of the dictionary files will be based on the PRODUCT_MODULE_NAME\n#\necho \"INPUT_FILE_NAME = ${INPUT_FILE_NAME}\"\necho \"INPUT_FILE_BASE = ${INPUT_FILE_BASE}\"\necho \"PRODUCT_MODULE_NAME = ${PRODUCT_MODULE_NAME}\"\nHEADER_LIST=`cat ${INPUT_FILE_DIR}/${INPUT_FILE_NAME} | gawk '/pragma *link *C++.*class /{a=$5;print gensub(/+;/,\"\",\"g\",a)\".h\" }' `\necho \"HEADER_LIST = ${HEADER_LIST}\"\nHEADER_LIST_FULL=`for i in $HEADER_LIST; do echo ${INPUT_FILE_DIR}/${i}; done`\necho \"HEADER_LIST_FULL = ${HEADER_LIST_FULL}\"\necho ${ROOTSYS}/bin/rootcint -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict.cpp -c -p -I${HEADER_SEARCH_PATHS// / -I} ${HEADER_LIST_FULL} ${INPUT_FILE_DIR}/${INPUT_FILE_NAME}\n\n${ROOTSYS}/bin/rootcint -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict.cpp -c -p -I${HEADER_SEARCH_PATHS// / -I} ${HEADER_LIST_FULL} ${INPUT_FILE_DIR}/${INPUT_FILE_NAME}\n\n\n# For ROOT 6 copy the pcm file to the LIB install path.\ntest -d ${DYLIB_INSTALL_NAME_BASE} || mkdir -p ${DYLIB_INSTALL_NAME_BASE}\ntest -d ${BUILT_PRODUCTS_DIR} || mkdir -p ${BUILT_PRODUCTS_DIR}\n# ls ${DERIVED_FILE_DIR}\n# This puts the pcm files in the ${DSTROOT}/${INSTALL_PATH} directory.\necho \"Send dict file to: \" ${DYLIB_INSTALL_NAME_BASE}\nif test -r ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm; then cp -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ${DYLIB_INSTALL_NAME_BASE}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ; fi\n# cp  ${DERIVED_FILE_DIR}/${DICT_BASE_NAME}Dict_rdict.pcm ${DYLIB_INSTALL_NAME_BASE}\n# This send the pcm files to to build product dir\necho \"Send file rdict.pcm to: \" ${BUILT_PRODUCTS_DIR}\nif test -r ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm; then cp -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ; fi";
+			script = "#\n# Script to create the dictionary for a multi class LinkDef file.\n# The names of the header files are extracted from the LinkDef file.\n# The name of the dictionary files will be based on the PRODUCT_MODULE_NAME\n#\necho \"INPUT_FILE_NAME = ${INPUT_FILE_NAME}\"\necho \"INPUT_FILE_BASE = ${INPUT_FILE_BASE}\"\necho \"PRODUCT_MODULE_NAME = ${PRODUCT_MODULE_NAME}\"\nHEADER_LIST=`cat ${INPUT_FILE_DIR}/${INPUT_FILE_NAME} | gawk '/pragma *link *C++.*class /{a=$5;print gensub(/+;/,\"\",\"g\",a)\".h\" }' `\necho \"HEADER_LIST = ${HEADER_LIST}\"\nHEADER_LIST_FULL=`for i in $HEADER_LIST; do echo ${INPUT_FILE_DIR}/${i}; done`\necho \"HEADER_LIST_FULL = ${HEADER_LIST_FULL}\"\necho ${ROOTSYS}/bin/rootcint -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict.cpp -c -p -I${HEADER_SEARCH_PATHS// / -I} ${HEADER_LIST_FULL} ${INPUT_FILE_DIR}/${INPUT_FILE_NAME}\n\n${ROOTSYS}/bin/rootcint -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict.cpp -c -p -I${HEADER_SEARCH_PATHS// / -I} ${HEADER_LIST_FULL} ${INPUT_FILE_DIR}/${INPUT_FILE_NAME}\n\n\n# For ROOT 6 copy the pcm file to the LIB install path.\ntest -d ${DYLIB_INSTALL_NAME_BASE} || mkdir -p ${DYLIB_INSTALL_NAME_BASE}\ntest -d ${BUILT_PRODUCTS_DIR} || mkdir -p ${BUILT_PRODUCTS_DIR}\n# ls ${DERIVED_FILE_DIR}\n# This puts the pcm files in the ${DSTROOT}/${INSTALL_PATH} directory.\necho \"Send dict file to: \" ${DYLIB_INSTALL_NAME_BASE}\nif test -r ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm; then cp -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ${DYLIB_INSTALL_NAME_BASE}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ; fi\n# cp  ${DERIVED_FILE_DIR}/${DICT_BASE_NAME}Dict_rdict.pcm ${DYLIB_INSTALL_NAME_BASE}\n# This send the pcm files to to build product dir\necho \"Send file rdict.pcm to: \" ${BUILT_PRODUCTS_DIR}\nif test -r ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm; then cp -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ; fi\n";
 		};
 /* End PBXBuildRule section */
 
@@ -140,6 +140,7 @@
 				40BE71191CEF9030002ADB25 /* Frameworks */,
 				40BE711A1CEF9030002ADB25 /* Headers */,
 				402314831D074AEB00396BE5 /* CopyFiles */,
+				40D3FFEA21C2FCA100381AF5 /* ShellScript */,
 			);
 			buildRules = (
 				40BE71321CEFAC91002ADB25 /* PBXBuildRule */,
@@ -181,6 +182,27 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		40D3FFEA21C2FCA100381AF5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Copy ${FULL_PRODUCT_NAME} to final destination.\"\ncp -v ${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME} ${INSTALL_DIR}\ncp -v ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}Dict_rdict.pcm ${INSTALL_DIR}\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		40BE71181CEF9030002ADB25 /* Sources */ = {

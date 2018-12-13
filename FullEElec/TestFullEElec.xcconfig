@@ -8,4 +8,3 @@
 #include "FullEElec.xcconfig"
 PRODUCT_NAME=TestFullEElec
 EXECUTABLE_PREFIX=
-INSTALL_PATH=/bin
