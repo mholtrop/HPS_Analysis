@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		401A55381D0A0F450017AE2C /* libHpsEvent.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 401A55371D0A0F450017AE2C /* libHpsEvent.dylib */; };
 		404397221D42A1DC00CA0FCA /* PiZero_LinkDef.h in Sources */ = {isa = PBXBuildFile; fileRef = 40BE712B1CEF912D002ADB25 /* PiZero_LinkDef.h */; };
+		40A076AB21C410BD00A29625 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40A076AA21C410BD00A29625 /* main.cpp */; };
 		40BE71241CEF9030002ADB25 /* PiZero.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40BE71231CEF9030002ADB25 /* PiZero.cpp */; };
 		40D9686F1D0A429A00B48D9F /* libBaseAna.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 40D9686E1D0A429A00B48D9F /* libBaseAna.dylib */; };
 		40F260911D42AB6E00B8A096 /* PiZero.h in Headers */ = {isa = PBXBuildFile; fileRef = 40BE711F1CEF9030002ADB25 /* PiZero.h */; };
@@ -32,15 +33,28 @@
 		};
 /* End PBXBuildRule section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		40A076A621C410BD00A29625 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		401A55371D0A0F450017AE2C /* libHpsEvent.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libHpsEvent.dylib; path = ../Release/libHpsEvent.dylib; sourceTree = "<group>"; };
+		40A076A821C410BD00A29625 /* TestRun */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestRun; sourceTree = BUILT_PRODUCTS_DIR; };
+		40A076AA21C410BD00A29625 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		40A076AF21C4120500A29625 /* TestRun.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = TestRun.xcconfig; sourceTree = "<group>"; };
 		40BE711C1CEF9030002ADB25 /* libPiZero.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libPiZero.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		40BE711F1CEF9030002ADB25 /* PiZero.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiZero.h; sourceTree = "<group>"; };
 		40BE71231CEF9030002ADB25 /* PiZero.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PiZero.cpp; sourceTree = "<group>"; };
 		40BE712B1CEF912D002ADB25 /* PiZero_LinkDef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiZero_LinkDef.h; sourceTree = "<group>"; };
 		40BE712C1CEF9279002ADB25 /* PiZero.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = PiZero.xcconfig; sourceTree = "<group>"; };
-		40BE712D1CEF9346002ADB25 /* PiZero_Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = PiZero_Debug.xcconfig; sourceTree = "<group>"; };
-		40BE712E1CEF936F002ADB25 /* PiZero_Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = PiZero_Release.xcconfig; sourceTree = "<group>"; };
 		40D9686E1D0A429A00B48D9F /* libBaseAna.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libBaseAna.dylib; path = ../Release/libBaseAna.dylib; sourceTree = "<group>"; };
 		40F5E00F1D3467A4006D7BC0 /* TestPiZero */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestPiZero; sourceTree = BUILT_PRODUCTS_DIR; };
 		40F5E0111D3467A4006D7BC0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -48,6 +62,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		40A076A521C410BD00A29625 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		40BE71191CEF9030002ADB25 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -68,6 +89,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		40A076A921C410BD00A29625 /* TestRun */ = {
+			isa = PBXGroup;
+			children = (
+				40A076AA21C410BD00A29625 /* main.cpp */,
+			);
+			path = TestRun;
+			sourceTree = "<group>";
+		};
 		40BE71131CEF9030002ADB25 = {
 			isa = PBXGroup;
 			children = (
@@ -76,6 +105,7 @@
 				40BE712A1CEF90A5002ADB25 /* Config */,
 				40BE711E1CEF9030002ADB25 /* PiZero */,
 				40F5E0101D3467A4006D7BC0 /* TestPiZero */,
+				40A076A921C410BD00A29625 /* TestRun */,
 				40BE711D1CEF9030002ADB25 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -85,6 +115,7 @@
 			children = (
 				40BE711C1CEF9030002ADB25 /* libPiZero.dylib */,
 				40F5E00F1D3467A4006D7BC0 /* TestPiZero */,
+				40A076A821C410BD00A29625 /* TestRun */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -103,9 +134,8 @@
 			isa = PBXGroup;
 			children = (
 				40BE712C1CEF9279002ADB25 /* PiZero.xcconfig */,
-				40BE712D1CEF9346002ADB25 /* PiZero_Debug.xcconfig */,
-				40BE712E1CEF936F002ADB25 /* PiZero_Release.xcconfig */,
 				40F5E0171D346922006D7BC0 /* TestPiZero.xcconfig */,
+				40A076AF21C4120500A29625 /* TestRun.xcconfig */,
 			);
 			name = Config;
 			sourceTree = "<group>";
@@ -132,6 +162,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		40A076A721C410BD00A29625 /* TestRun */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 40A076AC21C410BD00A29625 /* Build configuration list for PBXNativeTarget "TestRun" */;
+			buildPhases = (
+				40A076A421C410BD00A29625 /* Sources */,
+				40A076A521C410BD00A29625 /* Frameworks */,
+				40A076A621C410BD00A29625 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TestRun;
+			productName = TestRun;
+			productReference = 40A076A821C410BD00A29625 /* TestRun */;
+			productType = "com.apple.product-type.tool";
+		};
 		40BE711B1CEF9030002ADB25 /* PiZero */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 40BE71271CEF9030002ADB25 /* Build configuration list for PBXNativeTarget "PiZero" */;
@@ -177,6 +224,10 @@
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = Maurik;
 				TargetAttributes = {
+					40A076A721C410BD00A29625 = {
+						CreatedOnToolsVersion = 10.1;
+						ProvisioningStyle = Automatic;
+					};
 					40BE711B1CEF9030002ADB25 = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
@@ -199,6 +250,7 @@
 			targets = (
 				40BE711B1CEF9030002ADB25 /* PiZero */,
 				40F5E00E1D3467A4006D7BC0 /* TestPiZero */,
+				40A076A721C410BD00A29625 /* TestRun */,
 			);
 		};
 /* End PBXProject section */
@@ -206,7 +258,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		40D3FFEF21C3018600381AF5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -217,14 +269,14 @@
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "echo \"Copy to final destination.\"\ncp -v ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME} ${INSTALL_DIR}\necho ${PRODUCT_NAME}\n\n";
 			showEnvVarsInLog = 0;
 		};
 		40D3FFF021C301A300381AF5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -235,7 +287,7 @@
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "echo \"Copy ${FULL_PRODUCT_NAME} to final destination.\"\ncp -v ${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME} ${INSTALL_DIR}\ncp -v ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}Dict_rdict.pcm ${INSTALL_DIR}\n\n";
 			showEnvVarsInLog = 0;
@@ -243,6 +295,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		40A076A421C410BD00A29625 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				40A076AB21C410BD00A29625 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		40BE71181CEF9030002ADB25 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -263,21 +323,25 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		40BE71251CEF9030002ADB25 /* Debug */ = {
+		40A076AD21C410BD00A29625 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 40A076AF21C4120500A29625 /* TestRun.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -289,14 +353,16 @@
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -304,33 +370,40 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_ENABLE_DEBUG_INFO = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
-		40BE71261CEF9030002ADB25 /* Release */ = {
+		40A076AE21C410BD00A29625 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -342,53 +415,54 @@
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		40BE71251CEF9030002ADB25 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		40BE71261CEF9030002ADB25 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
 			};
 			name = Release;
 		};
 		40BE71281CEF9030002ADB25 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 40BE712D1CEF9346002ADB25 /* PiZero_Debug.xcconfig */;
+			baseConfigurationReference = 40BE712C1CEF9279002ADB25 /* PiZero.xcconfig */;
 			buildSettings = {
-				DEPLOYMENT_POSTPROCESSING = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				EXECUTABLE_PREFIX = lib;
-				GCC_ENABLE_CPP_EXCEPTIONS = YES;
-				GCC_ENABLE_CPP_RTTI = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
 		};
 		40BE71291CEF9030002ADB25 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 40BE712E1CEF936F002ADB25 /* PiZero_Release.xcconfig */;
+			baseConfigurationReference = 40BE712C1CEF9279002ADB25 /* PiZero.xcconfig */;
 			buildSettings = {
-				DEPLOYMENT_POSTPROCESSING = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				EXECUTABLE_PREFIX = lib;
-				GCC_ENABLE_CPP_EXCEPTIONS = YES;
-				GCC_ENABLE_CPP_RTTI = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Release;
 		};
@@ -396,8 +470,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 40F5E0171D346922006D7BC0 /* TestPiZero.xcconfig */;
 			buildSettings = {
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 			};
 			name = Debug;
 		};
@@ -405,14 +478,21 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 40F5E0171D346922006D7BC0 /* TestPiZero.xcconfig */;
 			buildSettings = {
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		40A076AC21C410BD00A29625 /* Build configuration list for PBXNativeTarget "TestRun" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40A076AD21C410BD00A29625 /* Debug */,
+				40A076AE21C410BD00A29625 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		40BE71171CEF9030002ADB25 /* Build configuration list for PBXProject "PiZero" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

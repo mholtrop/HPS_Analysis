@@ -5,37 +5,13 @@
 //  Created by Maurik Holtrop on 5/20/16.
 //  Copyright © 2016 Maurik. All rights reserved.
 //
-
+#include "../master.xcconfig"
 PRODUCT_NAME=FullEElec
-HPS_ANALYSIS_DIR=/data/HPS/HPS_Analysis
-HPSDST=${HPS_ANALYSIS_DIR}/hps-dst
-BASEANA=${HPS_ANALYSIS_DIR}/BaseAna
-INSTALL_PATH=${HPS_ANALYSIS_DIR}/${CONFIGURATION}
-INSTALL_DIR=${HPS_ANALYSIS_DIR}/${CONFIGURATION}
-
-// ======= ROOT 6 ==============
-ROOTSYS=/Users/maurik/root/root.git
-ROOTLIBS=-L${ROOTSYS}/lib -lCore -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -lProof -lpthread -stdlib=libc++ -lm -ldl
-CLANG_CXX_LANGUAGE_STANDARD = c++11
-
-HEADER_SEARCH_PATHS=${ROOTSYS}/include ${HPSDST}/include/hps_event ${BASEANA}/BaseAna
-LIBRARY_SEARCH_PATHS=${ROOTSYS}/lib 
-
-PREBINDING = NO;
-GCC_WARN_ABOUT_RETURN_TYPE = YES;
-GCC_WARN_UNUSED_VARIABLE = YES;
-
-GCC_INLINES_ARE_PRIVATE_EXTERN=NO
-GCC_SYMBOLS_PRIVATE_EXTERN = NO
-
-EXECUTABLE_EXTENSION = dylib
-LD_DYLIB_INSTALL_NAME = $(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_NAME)
 EXECUTABLE_PREFIX=lib
+EXECUTABLE_EXTENSION = dylib
 
-OTHER_LDFLAGS= ${ROOTLIBS}
-// -L${HPSDST}/Release -lHpsEvent
-OTHER_CPLUSPLUSFLAGS =  -fPIC -stdlib=libc++
+DYLIB_COMPATIBILITY_VERSION=0
+DYLIB_CURRENT_VERSION=0
 
-DEPLOYMENT_LOCATION = YES
-DEPLOYMENT_POSTPROCESSING = YES
+HEADER_SEARCH_PATHS = $(inherited) ${BASEANA}/BaseAna ${HPSDST}/include/hps_event
 

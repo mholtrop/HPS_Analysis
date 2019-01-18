@@ -47,8 +47,6 @@
 		40BE71231CEF9030002ADB25 /* SimAna.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SimAna.cpp; sourceTree = "<group>"; };
 		40BE712B1CEF912D002ADB25 /* SimAna_LinkDef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimAna_LinkDef.h; sourceTree = "<group>"; };
 		40BE712C1CEF9279002ADB25 /* SimAna.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SimAna.xcconfig; sourceTree = "<group>"; };
-		40BE712D1CEF9346002ADB25 /* SimAna_Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SimAna_Debug.xcconfig; sourceTree = "<group>"; };
-		40BE712E1CEF936F002ADB25 /* SimAna_Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SimAna_Release.xcconfig; sourceTree = "<group>"; };
 		40F5E00F1D3467A4006D7BC0 /* RunSimAna */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = RunSimAna; sourceTree = BUILT_PRODUCTS_DIR; };
 		40F5E0111D3467A4006D7BC0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		40F5E0171D346922006D7BC0 /* TestSimAna.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = TestSimAna.xcconfig; sourceTree = "<group>"; };
@@ -115,8 +113,6 @@
 			isa = PBXGroup;
 			children = (
 				40BE712C1CEF9279002ADB25 /* SimAna.xcconfig */,
-				40BE712D1CEF9346002ADB25 /* SimAna_Debug.xcconfig */,
-				40BE712E1CEF936F002ADB25 /* SimAna_Release.xcconfig */,
 				40F5E0171D346922006D7BC0 /* TestSimAna.xcconfig */,
 			);
 			name = Config;
@@ -148,7 +144,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 40BE71271CEF9030002ADB25 /* Build configuration list for PBXNativeTarget "SimAna" */;
 			buildPhases = (
-				402E1D6321595BEE0046AC4F /* DumpXcodeVars */,
 				40BE71181CEF9030002ADB25 /* Sources */,
 				40BE71191CEF9030002ADB25 /* Frameworks */,
 				40BE711A1CEF9030002ADB25 /* Headers */,
@@ -218,21 +213,6 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		402E1D6321595BEE0046AC4F /* DumpXcodeVars */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = DumpXcodeVars;
-			outputPaths = (
-				"",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/bash;
-			shellScript = "export\n";
-		};
 		40D3FFF121C3024C00381AF5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -249,6 +229,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "echo \"Copy ${FULL_PRODUCT_NAME} to final destination.\"\ncp -v ${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME} ${INSTALL_DIR}\ncp -v ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}Dict_rdict.pcm ${INSTALL_DIR}\n\n";
+			showEnvVarsInLog = 0;
 		};
 		40D3FFF221C3026E00381AF5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -313,14 +294,14 @@
 		};
 		40BE71281CEF9030002ADB25 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 40BE712D1CEF9346002ADB25 /* SimAna_Debug.xcconfig */;
+			baseConfigurationReference = 40BE712C1CEF9279002ADB25 /* SimAna.xcconfig */;
 			buildSettings = {
 			};
 			name = Debug;
 		};
 		40BE71291CEF9030002ADB25 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 40BE712E1CEF936F002ADB25 /* SimAna_Release.xcconfig */;
+			baseConfigurationReference = 40BE712C1CEF9279002ADB25 /* SimAna.xcconfig */;
 			buildSettings = {
 			};
 			name = Release;

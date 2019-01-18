@@ -1,0 +1,29 @@
+//
+//  TestRun.xcconfig
+//  TestRun
+//
+//  Created by Maurik Holtrop on 12/14/18.
+//  Copyright © 2018 Maurik. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+PREBINDING = NO;
+GCC_WARN_ABOUT_RETURN_TYPE = YES
+GCC_WARN_UNUSED_VARIABLE = YES
+GCC_GENERATE_DEBUGGING_SYMBOLS = YES
+GCC_GENERATE_DEBUGGING_SYMBOLS[config=Release]=NO
+GCC_OPTIMIZATION_LEVEL=0
+GCC_OPTIMIZATION_LEVEL[config=Release] = 3
+DEBUG_INFORMATION_FORMAT=dwarf
+ENABLE_TESTABILITY = YES
+COPY_PHASE_STRIP = NO
+
+GCC_INLINES_ARE_PRIVATE_EXTERN=NO
+GCC_SYMBOLS_PRIVATE_EXTERN = NO
+
+DEPLOYMENT_LOCATION = YES
+DEPLOYMENT_POSTPROCESSING[config=Release] = YES
+
+CLANG_CXX_LIBRARY = libc++
+CLANG_CXX_LANGUAGE_STANDARD = c++11

@@ -8,4 +8,3 @@
 #include "PiZero.xcconfig"
 PRODUCT_NAME=TestPiZero
 EXECUTABLE_PREFIX=
-INSTALL_PATH=/bin

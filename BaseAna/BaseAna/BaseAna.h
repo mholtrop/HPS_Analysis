@@ -27,9 +27,10 @@ using namespace std;
 #include <TH2F.h>
 #include <TGaxis.h>
 #include <TCanvas.h>
-
 #include "HpsEvent.h"
-
+#ifdef NO_HPS_EVENT_IN_HPSTR
+#include "Event.h"
+#endif
 class BaseAna : public TSelector {
 public:
   TTree  *fChain; //! Chain holding events.
@@ -41,7 +42,7 @@ public:
 
   HpsEvent *event;   // Stores the HpsEvent
   TBranch  *b_event; // Branch to HpsEvent
-  
+
   long    current_event; // Current event in file
   long    evt_count;     // Current sequence number for event.
 

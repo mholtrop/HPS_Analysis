@@ -41,8 +41,6 @@
 		40BE71231CEF9030002ADB25 /* FullEElec.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FullEElec.cpp; sourceTree = "<group>"; };
 		40BE712B1CEF912D002ADB25 /* FullEElec_LinkDef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FullEElec_LinkDef.h; sourceTree = "<group>"; };
 		40BE712C1CEF9279002ADB25 /* FullEElec.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = FullEElec.xcconfig; sourceTree = "<group>"; };
-		40BE712D1CEF9346002ADB25 /* FullEElec_Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = FullEElec_Debug.xcconfig; sourceTree = "<group>"; };
-		40BE712E1CEF936F002ADB25 /* FullEElec_Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = FullEElec_Release.xcconfig; sourceTree = "<group>"; };
 		40D9686E1D0A429A00B48D9F /* libBaseAna.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libBaseAna.dylib; path = ../Release/libBaseAna.dylib; sourceTree = "<group>"; };
 		40F2609B1D42D10200B8A096 /* FullEE_Histos.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FullEE_Histos.cpp; sourceTree = "<group>"; };
 		40F2609C1D42D10200B8A096 /* FullEE_Histos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FullEE_Histos.h; sourceTree = "<group>"; };
@@ -109,8 +107,6 @@
 			isa = PBXGroup;
 			children = (
 				40BE712C1CEF9279002ADB25 /* FullEElec.xcconfig */,
-				40BE712D1CEF9346002ADB25 /* FullEElec_Debug.xcconfig */,
-				40BE712E1CEF936F002ADB25 /* FullEElec_Release.xcconfig */,
 				40F5E0171D346922006D7BC0 /* TestFullEElec.xcconfig */,
 			);
 			name = Config;
@@ -213,7 +209,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		40D3FFED21C3009E00381AF5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -224,14 +220,14 @@
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "echo \"Copy ${FULL_PRODUCT_NAME} to final destination.\"\ncp -v ${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME} ${INSTALL_DIR}\ncp -v ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}Dict_rdict.pcm ${INSTALL_DIR}\n";
 			showEnvVarsInLog = 0;
 		};
 		40D3FFEE21C3010800381AF5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -242,7 +238,7 @@
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "echo \"Copy to final destination.\"\ncp -v ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME} ${INSTALL_DIR}\necho ${PRODUCT_NAME}\n";
 			showEnvVarsInLog = 0;
@@ -372,7 +368,7 @@
 		};
 		40BE71281CEF9030002ADB25 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 40BE712D1CEF9346002ADB25 /* FullEElec_Debug.xcconfig */;
+			baseConfigurationReference = 40BE712C1CEF9279002ADB25 /* FullEElec.xcconfig */;
 			buildSettings = {
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -387,7 +383,7 @@
 		};
 		40BE71291CEF9030002ADB25 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 40BE712E1CEF936F002ADB25 /* FullEElec_Release.xcconfig */;
+			baseConfigurationReference = 40BE712C1CEF9279002ADB25 /* FullEElec.xcconfig */;
 			buildSettings = {
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
