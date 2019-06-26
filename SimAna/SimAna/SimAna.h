@@ -41,7 +41,7 @@
 #include "EVENT/LCCollection.h"
 #include "IMPL/LCTOOLS.h"
 //#include "EVENT/CalorimeterHit.h"
-#include <IMPL/MCParticleImpl.h>
+#include "IMPL/MCParticleImpl.h"
 #include "IMPL/SimCalorimeterHitImpl.h"
 //#include "EVENT/SimCalorimeterHit.h"
 #include "EVENT/SimTrackerHit.h"

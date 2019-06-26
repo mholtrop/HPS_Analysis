@@ -5,7 +5,7 @@
 #
 # Specify the minimum CMake version required.  If the cmake version 
 # minimum is not met, cmake will fail.
-cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 cmake_policy(SET CMP0005 NEW)
 
 if( CMAKE_VERSION VERSION_GREATER 3.0)
@@ -36,7 +36,13 @@ set(CMAKE_INSTALL_LIBDIR           "${CMAKE_INSTALL_PREFIX}/lib" CACHE PATH "Ins
 set(CMAKE_INSTALL_BINDIR           "${CMAKE_INSTALL_PREFIX}/bin" CACHE PATH "Installation location of binaries. ")
 set(CMAKE_INSTALL_DOCDIR           "${CMAKE_INSTALL_PREFIX}/doc" CACHE PATH "Installation location of documentation. ")
 
- 
+
+# Set the location of the LCIO root directory.
+set(LCIO_ROOT_DIR "$ENV{LCIO}" CACHE PATH "Location of the LCIO installation. ")
+
+message(STATUS "Using LCIO from ${LCIO_ROOT_DIR}")
+
+
 # You need to tell CMake where to find the ROOT installation. This can be done in a number of ways:
 #   - ROOT built with classic configure/make use the provided $ROOTSYS/etc/cmake/FindROOT.cmake
 #   - ROOT built with CMake. Add in CMAKE_PREFIX_PATH the installation prefix for ROOT
@@ -73,6 +79,22 @@ include_directories("${HPS_DST_ROOT_DIR}/include/utils")
 
 set(HPS_DST_LIB_DIR "${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Location of the libraries for hps-dst.")
 
+# Include the LCIO headers
+include_directories(${LCIO_ROOT_DIR}/include)
+
+# Find the LCIO libraries
+find_library(LCIO_LIB lcio ${LCIO_ROOT_DIR}/lib)
+if(NOT LCIO_LIB)
+	message(FATAL_ERROR
+		"\nThe library liblcio was not found.  "
+		"Please make sure LCIO has been installed."
+		"Then specify -DLCIO_ROOT_DIR=<path> or "
+		"set the environmental variable LCIO=<path> "
+		"See documentation for details.")
+endif()
+
+message(STATUS "LCIO: ${LCIO_LIB}")
+
 
 if(APPLE)
   # use, i.e. don't skip the full RPATH for the build tree
@@ -107,6 +129,10 @@ add_subdirectory(PiZero/PiZero)
 
 include_directories(${CMAKE_SOURCE_DIR}/FullEElec/FullEElec)
 add_subdirectory(FullEElec/FullEElec)
+
+# include_directories(${CMAKE_SOURCE_DIR}/SimAna/SimAna)
+add_subdirectory(SimAna/SimAna)
+
 
 #------------------------------#
 #--- Generate Documentation ---#

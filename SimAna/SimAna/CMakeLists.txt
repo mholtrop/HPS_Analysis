@@ -11,7 +11,7 @@ include_directories(${BaseAna_INCLUDE_DIRS})
 SET(PROJECT_HEADER_FILES SimAna.h)
 SET(PROJECT_HEADER_LINKDEF_FILES SimAna_LinkDef.h)
 SET(PROJECT_CXX_FILES  SimAna.cpp)
-SET(PROJECT_EXTRA_LIBS BaseAna ${HPS_DST_LIB_DIR}/libHpsEvent${CMAKE_SHARED_LIBRARY_SUFFIX} )
+SET(PROJECT_EXTRA_LIBS ${LCIO_LIB} )
 
 #--- Below this line, you should not need to specify project specific things.
 
