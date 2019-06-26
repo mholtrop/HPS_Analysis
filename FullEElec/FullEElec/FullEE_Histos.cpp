@@ -23,6 +23,7 @@ FullEE_Histos::FullEE_Histos(BaseAna *mom,const char *nam){
   name = nam;              // Does not check if name already exists in this direcory.
   cluster_energy=nullptr;
   cluster_loc=nullptr;
+  track_energy=nullptr;
   track_chi2 = nullptr;
   cluster_track_match_dxdy=nullptr;
   cluster_track_match_dr=nullptr;
@@ -42,8 +43,9 @@ void FullEE_Histos::Book(void){
 
 //  TList *hdir = new TList();
 //  hdir->SetName(name);
-  hdir->Add(cluster_energy = new TH1F("cluster_energy","Cluster Energy",1500,0.,1.5));
+  hdir->Add(cluster_energy = new TH1F("cluster_energy","Cluster Energy",2800,0.,2.8));
   hdir->Add(cluster_loc = new TH2F("cluster_loc","Cluster location",350,-330,370,180,-90,90));
+  hdir->Add(track_energy= new TH1F("track_energy","Track energy",2800,0.,2.8));
   hdir->Add(track_chi2  = new TH1F("track_chi2","Track Chi Squared",200,0.,100.));
   hdir->Add(cluster_track_match_dxdy = new TH2F("cluster_track_match_dxdy","Cluster - Track match location, dx ,dy",600,-30,30,600,-30,30));
   hdir->Add(cluster_track_match_dr = new TH1F("cluster_track_match_dr","Cluster - Track match location, dr",500,0,50));

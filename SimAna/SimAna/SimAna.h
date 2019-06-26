@@ -16,7 +16,13 @@
 
 #include <iostream>
 #include <ctime>
+#include <cmath>
+#include <stdio.h>
+#include <stdlib.h>
 
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wconversion"
 #include <TROOT.h>
 #include <TProofServ.h>
 #include <TChain.h>
@@ -27,6 +33,8 @@
 #include <TGaxis.h>
 #include <TCanvas.h>
 #include <TLorentzVector.h>
+#pragma clang diagnostic pop
+
 #include "lcio.h"
 
 //#include "IO/LCReader.h"
@@ -41,6 +49,8 @@
 using namespace std ;
 using namespace lcio ;
 
+#define Pi 3.14159265358979323846
+
 class SimAna : public TNamed {
 
 public:
@@ -48,70 +58,39 @@ public:
   LCReader *lc_reader = nullptr; //! LCIO reader handle. NOT streamed by ROOT.
   LCEvent  *evt = nullptr;       //! LCIO event handle, NOT streamed by ROOT.
 
-  int fCounter_Freq=10000;
-  // Histograms -- set each to NULL in Init and define in SlaveBegin.
-  // Note: These nullptr are needed so that the class can be read in from file.
-  
-  TH1F *N_EcalHits=nullptr;
-  TH1F *N_EcalHits_E=nullptr;
-  TH1F *N_MCParticle=nullptr;
-  TH1F *E_MCParticle=nullptr;
-  TH1F *E_MCParticle2=nullptr;
-  TH1F *N_TrackerHits=nullptr;
-  TH1F *N_TrackerHitsEcal=nullptr;
-  
-  // Ecal Info
-  TH1F *Ecal_Hit_Energy=nullptr;
-  TH1F *Ecal_Hit_CE=nullptr;
-  TH1F *Ecal_Hit_Energy_sum=nullptr;
-  TH2F *Ecal_Hits_Loc=nullptr;
-  TH2F *Ecal_Hits_Loc_E=nullptr;
-  TH1F *Ecal_Hit_CNT  = nullptr;
-  TH1F *Ecal_Hit_Time = nullptr;
-  TH1F *Ecal_Hit_TimeAve= nullptr;
-  TH1F *Ecal_Hit_TimeRel= nullptr;
+  vector<string> filenames;
+  int            current_file=0;
+  int fCounter_Freq=1000;
 
-  TH1F *Ecal_Hit_CNT_ecut  = nullptr;
-  TH1F *Ecal_Hit_Time_ecut = nullptr;
-  TH1F *Ecal_Hit_TimeAve_ecut= nullptr;
-  TH1F *Ecal_Hit_TimeRel_ecut= nullptr;
-
-  // Hodoscope
-  TH1F *N_HodoHits = nullptr;
-  TH1F *Hodo_Hit_Energy = nullptr;
-  TH1F *Hodo_Hit_CNT = nullptr;
-  TH1F *Hodo_Hit_CE  = nullptr;
-  TH1F *Hodo_Hit_Time = nullptr;
+  double Max_Energy=5.0;
   
-  // Tracker Info
-  TH1F *Tracker_Hit_Energy=nullptr;
-  TH1F *Tracker_Hit_Px=nullptr;
-  TH1F *Tracker_Hit_Py=nullptr;
-  TH1F *Tracker_Hit_Pz=nullptr;
-  TH1F *Tracker_Hit_PathLength=nullptr;
-  
-
 public:
-  SimAna(void);
-  SimAna(string lcio_file_name,bool direct_access=false);
-  SimAna(string lcio_file_name,const char *name,bool direct_access=false);
+  SimAna(void){};
+  SimAna(const string & lcio_file_name,bool direct_access=false, double max_E=4.7);
+  
   virtual ~SimAna();
   // ===== Initializations =====
-  void Init(const string file, bool direct_access=false);
-  void OpenLCIO(const string file);
-
+  int  AddLcioFiles(const string& filename);
+  void InitLcio(bool direct_access=false);
+ 
   // ====  Event Processing ====
-  void  FillHistos(void);
-  bool  Next(void);
-  int   Run(int nevt=0);
-  bool  ShowNext(int opt=0);
+  virtual bool  Next(void);
+  virtual int   Run(int nevt=0);
+  bool  GetEvent(int evtnum=0);
+  bool  GetEvent(int runnum,int evtnum);
+
+  // ==== Histograms ====
+  void InitHists(double max_E=4.7);
+  virtual void  FillHistos(void);
   
   // ==== Information  =====
   int   GetNEvents(){
+    // Returns the number of events in the current file.
     return(lc_reader->getNumberOfEvents());
   }
-  bool  GetEvent(int evtnum=0);
-  bool  GetEvent(int runnum,int evtnum);
+  
+  int  CountEvents();
+  
   int   GetRunNumber(void);
   int   GetEventNumber(void);
 
@@ -152,26 +131,30 @@ IMPL::MCParticleImpl *GetMCParticle(int n,LCCollection *col=nullptr){
   }
   
   int GetEcalHit_ix(IMPL::SimCalorimeterHitImpl *calorimeter_hit){
+    // Return the crystal x index for the hit.
+    //
     uint64_t id0 = (((uint64_t)calorimeter_hit->getCellID1()<<32)) + calorimeter_hit->getCellID0();
     // ECAL hit bit field: "system:6,layer:2,ix:-8,iy:-6"
     int ix= (int)((id0& 0x00FF00LL)>> 8);
     return( (ix&0x80?ix-0x100:ix )); // Use the high bit as sign. If set, then ix = ix - (iy_max+1)
   }
   int GetEcalHit_iy(IMPL::SimCalorimeterHitImpl *calorimeter_hit){
+    // Return the crystal y index for the hit.
+    //
     uint64_t id0 = (((uint64_t)calorimeter_hit->getCellID1()<<32)) + calorimeter_hit->getCellID0();
     // ECAL hit bit field: "system:6,layer:2,ix:-8,iy:-6"
     int iy= (int)((id0& 0x3F0000LL)>> 16);
     return( (iy&0x20?iy-0x40:iy) ); // Use the high bit as sign. If set, then iy = iy - (iy_max+1)
   }
 
+  
+  
   // ==== Hodoscope =====
-  IMPL::SimCalorimeterHitImpl *GetHodoHit(int n,LCCollection *col=nullptr){
+  EVENT::SimTrackerHit *GetHodoHit(int n,LCCollection *col=nullptr){
     // Get the N-th hodoscope hit from the collection.
     if(col==nullptr) col=static_cast<LCCollection *>(evt->getCollection("HodoscopeHits"));
-    return((IMPL::SimCalorimeterHitImpl *)col->getElementAt(n));
+    return((EVENT::SimTrackerHit *)col->getElementAt(n));
   }
-
-  
   
   //========= Tracker =========
   
@@ -187,12 +170,19 @@ IMPL::MCParticleImpl *GetMCParticle(int n,LCCollection *col=nullptr){
   void PrintParticle(EVENT::MCParticle *part,map<EVENT::MCParticle *,int> MC_ptoi,int level=0);
   // Print information about this event. Mode=0x1 - collection table, 0x2 - detailed full event dump,  0x3 MCParticle tree, 0x4 Hit Tree.
   void Print(int mode=0);
+ 
   inline int TrXhit(const int x) const{ return (x>=0?x:x+1); };
-  TH2F *EcalHitMap(void);
-  void FancyPlot(TH2F *histo,int opt);
   
   virtual Int_t Version() const { return 1; }
   ClassDef(SimAna,1);
 };
+
+// Convenient Global Utility Functions
+// TODO: Split this off into its own header and source files.
+
+TH2F *EcalHitMap(SimAna *sa);
+void EcalFancyPlot(TH2F *histo,int opt=0);
+
+
 
 #endif

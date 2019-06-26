@@ -29,6 +29,7 @@ public:
 
   TH1F *cluster_energy;
   TH2F *cluster_loc;
+  TH1F *track_energy;
   TH1F *track_chi2;
   TH2F *cluster_track_match_dxdy;
   TH1F *cluster_track_match_dr;

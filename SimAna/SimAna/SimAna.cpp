@@ -7,21 +7,12 @@
 
 ClassImp(SimAna);
 
-SimAna::SimAna(){
-  SetName("SimAna");
-    SetTitle("LCIO output analyzer.");
- }
-
-SimAna::SimAna(string lcio_file_name, bool direct_access){
+SimAna::SimAna(const string & filename, bool direct_access,double max_E){
   SetName("SimAna");
   SetTitle("LCIO output analyzer.");
-  Init(lcio_file_name,direct_access);
-}
-
-SimAna::SimAna(string lcio_file_name, const char* name, bool direct_access){
-  SetName(name);
-  SetTitle("LCIO output analyzer.");
-  Init(lcio_file_name,direct_access);
+  AddLcioFiles(filename);
+  InitLcio(direct_access);
+  InitHists(max_E);
 }
 
 // Standard destructor.
@@ -29,204 +20,91 @@ SimAna::~SimAna(){
   // Do any cleanup.
 }
 
-void SimAna::Init(const string lcio_file_name, bool direct_access){
-// Initialize with file for reading, and setup histograms.
+int SimAna::AddLcioFiles(const string& filename){
+  // Open the filename, allowing for this to be a file pattern, i.e. open many files.
+  
+  string cmd="ls -1 "+filename+" 2>&1 ";
+  FILE * stream;
+  const int max_buffer = 256;
+  char buffer[max_buffer];
+  int  count = 0;
+  
+  stream = popen(cmd.c_str(), "r");
+  if (stream) {
+    while (!feof(stream))
+      if (fgets(buffer, max_buffer, stream) != NULL){
+        count++;
+        string stmp(buffer);
+        filenames.push_back(stmp.substr( 0, stmp.find_last_not_of(" \r\n\t") + 1 ));
+      }
+    pclose(stream);
+  }
+  //  for(const string &s : data){
+  //    cout << s << endl;
+  //  }
+  return(count);
+}
+
+void SimAna::InitLcio(bool direct_access){
+  // Initialize the LCIO reader.
+  
   if(direct_access==true){
     lc_reader=LCFactory::getInstance()->createLCReader(LCReader::directAccess);
   }else{
     lc_reader=LCFactory::getInstance()->createLCReader();
   }
-  OpenLCIO(lcio_file_name);
-  
-  // ====== Book Histograms ========
-  
-  // ====== ECAL
-  N_EcalHits = new TH1F("N_EcalHits","Number of ECAL Hits;Number of hits",100,0,99);
-  N_EcalHits_E= new TH1F("N_EcalHits_E","Number of ECAL Hits with E>50MeV;Number of hits",100,0,99);
+  if(filenames.size()>0) lc_reader->open(filenames);
+}
 
-  N_MCParticle = new TH1F("N_MCParticle","Number of MC Particles;Number of particles",200,0,199);
-  E_MCParticle = new TH1F("E_MCParticle","Energy of MC Particle;E (GeV);count",1000,0.,2.4);
-  E_MCParticle2 = new TH1F("E_MCParticle2","Energy of MC Particle;E (GeV);count",1000,0.,0.01);
-  N_TrackerHits = new TH1F("N_TrackerHits","Number of Tracker Hits;Number of hits",100,0,99);
-  N_TrackerHitsEcal = new TH1F("N_TrackerHitsEcal","Number of Tracker Hits Ecal;Number of hits",100,0,99);
-  
-  Ecal_Hit_Energy = new TH1F("Ecal_Hit_Energy","Ecal Hit energy;Energy (GeV)",2300,0.,2.3);
-  Ecal_Hit_CE     = new TH1F("Ecal_Hit_CE","Ecal Hit Contributor energy;Energy (GeV)",2300,0.,2.3);
-  Ecal_Hit_Energy_sum = new TH1F("Ecal_Hit_Energy_sum","Ecal Hit energy sum;Energy (GeV)",2300,0.,2.3);
-  
-  int ecal_nx=23;
-  int ecal_ny=5;
-  Ecal_Hits_Loc = new TH2F("Ecal_Hits_Loc","Ecal Hits;x-index;y-index",(ecal_nx+1)*2+1,-ecal_nx-1.5,ecal_nx+2-0.5,(ecal_ny+1)*2+1,-ecal_ny-1.5,ecal_ny+1.5);
-  Ecal_Hits_Loc_E = new TH2F("Ecal_Hits_Loc_E","Ecal Hits with E>50MeV;x-index;y-index",(ecal_nx+1)*2+1,-ecal_nx-1.5,ecal_nx+2-0.5,(ecal_ny+1)*2+1,-ecal_ny-1.5,ecal_ny+1.5);
-  
-  Ecal_Hit_CNT  = new TH1F("Ecal_Hit_CNT","Num of Ecal hit contributions;N;counts",1000,0.,1000.);
-  Ecal_Hit_Time = new TH1F("Ecal_Hit_Time","Ecal hit time;time;counts",1000,-1000.,1000.);
-  Ecal_Hit_TimeAve = new TH1F("Ecal_Hit_TimeAve","Ecal hit time average per event;time;counts",1000,-1000.,1000.);
-  Ecal_Hit_TimeRel = new TH1F("Ecal_Hit_TimeRel","Ecal hit time relative to average;time;counts",1000,-2000.,1000.);
 
-  Ecal_Hit_CNT_ecut  = new TH1F("Ecal_Hit_CNT_ecut","Num of Ecal hit contributions;N;counts",1000,0.,5000.);
-  Ecal_Hit_Time_ecut = new TH1F("Ecal_Hit_Time_ecut","Ecal hit time;time;counts",1000,-1000.,1000.);
-  Ecal_Hit_TimeAve_ecut = new TH1F("Ecal_Hit_TimeAve_ecut","Ecal hit time average per event;time;counts",1000,-1000.,1000.);
-  Ecal_Hit_TimeRel_ecut = new TH1F("Ecal_Hit_TimeRel_ecut","Ecal hit time relative to average;time;counts",1000,-2000.,1000.);
-
-  // ====== Hodoscope
-  N_HodoHits = new TH1F("N_HodoHits","Number of Hodoscope Hits;Number of Hits",100,0,99);
-  Hodo_Hit_Energy = new TH1F("Hodo_Hit_Energy","Energy of Hodoscope Hit;Energy (GeV)",1000,0.,0.05);
-  Hodo_Hit_CNT  = new TH1F("Hodo_Hit_CNT","Num of Hodoscope hit contributions;N;counts",20,0.,20.);
-  Hodo_Hit_CE     = new TH1F("Hodo_Hit_CE","Hodo Hit Contributor energy;Energy (GeV)",2300,0.,0.01);
-  Hodo_Hit_Time = new TH1F("Hodo_Hit_Time","Hodo hit time;time;counts",610*4,-10.,600.);
-
-  // ==== Tracker
-  Tracker_Hit_Energy = new TH1F("Tracker_Hit_Energy","SVT Hit Energy Deposited;Energy (GeV)",1000,0.,0.01);
-  Tracker_Hit_PathLength= new TH1F("Tracker_Hit_PathLength","Tracker Hit Path Length;L (mm)",1000,0.32,0.33);
-  Tracker_Hit_Px = new TH1F("Tracker_Hit_Px","Tracker Hit x Momentum;Px (GeV/c)",1000,0.,0.1);
-  Tracker_Hit_Py = new TH1F("Tracker_Hit_Py","Tracker Hit y Momentum;Py (GeV/c)",1000,0.,0.15);
-  Tracker_Hit_Pz = new TH1F("Tracker_Hit_Pz","Tracker Hit z Momentum;Pz (GeV/c)",1000,0.,2.3);
-
+bool SimAna::Next(void){
+  // Read the next event from the LCIO file.
+  evt = lc_reader->readNextEvent();
+  if(evt == nullptr){
+    return false;
+  }else{
+    return true;
+  }
 }
 
 int SimAna::Run(int nevt){
   // Run through nevt events of this file. If nevt<=0 run through all.
   // For each event call FillHistos()
   int count=0;
-  if(nevt<=0){
-    nevt=GetNEvents();
-  }
-  for(int i=0;i<nevt && true; ++i){
-    if(Next()){
-      if( count%fCounter_Freq == 0){
-        printf("i: %12d  Event: %12d \n",i,evt->getEventNumber());
-      };
-      count++;
-      FillHistos();
-    }
+  if(nevt<=0) nevt= 1<<30;
+  while(Next() && count<nevt){
+    if( count%fCounter_Freq == 0){
+      printf("i: %12d  Event: %12d \n",count,evt->getEventNumber());
+//    Print(1);
+    };
+    count++;
+    FillHistos();
   }
   return(count);
+}
+
+// ======== Histograms ===============
+
+void SimAna::InitHists(double max_E){
+  // Initialize histograms.
+  Max_Energy=max_E;
 }
 
 void SimAna::FillHistos(void){
   // Fill all the histograms with the data from the current event.
   // This is where the work is done.
-  
-  N_EcalHits->Fill(getNEcalHits());
-  N_HodoHits->Fill(getNHodoHits());
-  N_MCParticle->Fill(getNMCParticle());
-  N_TrackerHits->Fill(getNTrackerHits());
-  N_TrackerHitsEcal->Fill(getNTrackerHitsEcal());
-  
-  // ========= MCParticle ==============
-  
-  if(getNMCParticle()>0){
-    IMPL::MCParticleImpl *mcp;
-    LCCollection *mc_particles = static_cast<LCCollection *>(evt->getCollection("MCParticle"));
-    for(int i=0;i<mc_particles->getNumberOfElements();++i){
-      mcp = GetMCParticle(i,mc_particles);
-      E_MCParticle->Fill(mcp->getEnergy());
-      E_MCParticle2->Fill(mcp->getEnergy());
-    }
-  }
-  
-  
-  //========== ECAL Hits ==============
-  int cnt=0;
-  if(getNEcalHits()>0){
-    IMPL::SimCalorimeterHitImpl *calorimeter_hit;
-    LCCollection *ecal_hits=static_cast<LCCollection *>(evt->getCollection("EcalHits"));
-    double energy_sum=0;
-    for(int n=0; n<ecal_hits->getNumberOfElements();++n){
-      calorimeter_hit = GetEcalHit(n,ecal_hits);
-      Ecal_Hit_Energy->Fill(calorimeter_hit->getEnergy());
-      energy_sum+=calorimeter_hit->getEnergy();
-      Ecal_Hits_Loc->Fill(GetEcalHit_ix(calorimeter_hit),GetEcalHit_iy(calorimeter_hit));
-      if(calorimeter_hit->getEnergy()>0.050){
-        cnt++;
-        Ecal_Hits_Loc_E->Fill(GetEcalHit_ix(calorimeter_hit),GetEcalHit_iy(calorimeter_hit));
-      }
-      int num_elem=calorimeter_hit->getNMCContributions();
-      Ecal_Hit_CNT->Fill(num_elem);
-      double time_sum=0;
-      double time_sum_ecut=0;
+}
 
-      int count_e_cut=0;
-      for (int nt=0; nt<num_elem;++nt){
-        double cal_energy = calorimeter_hit->getEnergyCont(nt);
-        double cal_time=calorimeter_hit->getTimeCont(nt);
-        Ecal_Hit_CE->Fill(cal_energy);
-        Ecal_Hit_Time->Fill(cal_time);
-        if(cal_energy>0.001){
-          count_e_cut++;
-          Ecal_Hit_Time_ecut->Fill(cal_time);
-          time_sum_ecut += cal_time;
-        }
-        time_sum += cal_time;
-      }
-      
-      if(num_elem>0){
-        double time_ave = time_sum/num_elem;
-        Ecal_Hit_TimeAve->Fill(time_ave);
-        for (int nt=0; nt<num_elem;++nt){
-          double cal_time=calorimeter_hit->getTimeCont(nt);
-          double rel_time = cal_time - time_ave;
-          Ecal_Hit_TimeRel->Fill(rel_time);
-        }
-      }else{
-        std::cout << "Error: not hit time, but there are hits. Nhits = " << num_elem << std::endl;
-        Ecal_Hit_TimeAve->Fill(time_sum);
-      }
-
-      Ecal_Hit_CNT_ecut->Fill(count_e_cut);
-      if(count_e_cut>0){
-        double time_ave_ecut = time_sum_ecut/count_e_cut;
-        Ecal_Hit_TimeAve_ecut->Fill(time_ave_ecut);
-        for (int nt=0; nt<num_elem;++nt){
-          if(calorimeter_hit->getEnergyCont(nt)>0.001){
-            double cal_time=calorimeter_hit->getTimeCont(nt);
-            double rel_time = cal_time - time_ave_ecut;
-            Ecal_Hit_TimeRel_ecut->Fill(rel_time);
-          }
-        }
-      }
-    }
-    Ecal_Hit_Energy_sum->Fill(energy_sum);
-    
-    N_EcalHits_E->Fill(cnt);
+int SimAna::CountEvents(){
+  // Open each of the LCIO files and get the events in them, adding up all events.
+  int totevents=0;
+  LCReader *lcr=LCFactory::getInstance()->createLCReader();
+  for( auto &s:filenames){
+    lcr->open(s);
+    totevents+=lcr->getNumberOfEvents();
+    lcr->close();
   }
-  
-//========== Hodoscope Hits ==============
-  cnt=0;
-  if(getNHodoHits()>0){
-    IMPL::SimCalorimeterHitImpl *hodo_hit;
-    LCCollection *hodo_hits=static_cast<LCCollection *>(evt->getCollection("HodoscopeHits"));
-    for(int n=0; n<hodo_hits->getNumberOfElements();++n){
-      hodo_hit = GetHodoHit(n,hodo_hits);
-      Hodo_Hit_Energy->Fill(hodo_hit->getEnergy());
-      int num_elem=hodo_hit->getNMCContributions();
-      Hodo_Hit_CNT->Fill(num_elem);
-      for (int nt=0; nt<num_elem;++nt){
-        double hodo_energy = hodo_hit->getEnergyCont(nt);
-        Hodo_Hit_CE->Fill(hodo_energy);
-        double hodo_time=    hodo_hit->getTimeCont(nt);
-        Hodo_Hit_Time->Fill(hodo_time);
-      }
-    }
-  }
-  
-//  //===== Tracker Hits =====
-  if(getNTrackerHits()>0){
-    EVENT::SimTrackerHit *tracker_hit;
-    LCCollection *tracker_hits=static_cast<LCCollection *>(evt->getCollection("TrackerHits"));
-    for(int n=0; n<tracker_hits->getNumberOfElements();++n){
-      tracker_hit = GetSimTrackerHit(n,tracker_hits);
-      float SVT_hit_energy=tracker_hit->getEDep();
-      Tracker_Hit_Energy->Fill(SVT_hit_energy);
-      const float *momentum=tracker_hit->getMomentum();
-      Tracker_Hit_Px->Fill(momentum[0]);
-      Tracker_Hit_Py->Fill(momentum[1]);
-      Tracker_Hit_Pz->Fill(momentum[2]);
-      Tracker_Hit_PathLength->Fill(tracker_hit->getPathLength());
-    }
-  }
-  
+  return(totevents);
 }
 
 bool SimAna::GetEvent(int evtnum){
@@ -270,25 +148,6 @@ int SimAna::GetEventNumber(void){
   // Return the current event number
   if(evt) return(evt->getEventNumber());
   else return(-1);
-}
-
-bool SimAna::Next(void){
-// Read the next event from the LCIO file.
-  evt = lc_reader->readNextEvent();
-  if(evt == nullptr){
-    return false;
-  }else{
-    return true;
-  }
-}
-
-void SimAna::OpenLCIO(const string file){
-// Open an LCIO file for processing
-  if( lc_reader != nullptr){
-    lc_reader->open(file);
-  }else{
-    Init(file,false);
-  }
 }
 
 int SimAna::getN(string name){
@@ -407,15 +266,7 @@ void SimAna::Print(int mode){
   }
 }
 
-bool SimAna::ShowNext(int opt){
-  Next();
-  TH2F *hits=EcalHitMap();
-  FancyPlot(hits,opt);
-  return(true);
-}
-
-
-TH2F *SimAna::EcalHitMap(void){
+TH2F *EcalHitMap(SimAna *sa){
   // Return a 2D histogram showing the distribution of ECal hits for this event.
   // Use:
   // ... // define ana
@@ -433,10 +284,10 @@ TH2F *SimAna::EcalHitMap(void){
     hit_map->Reset();
   }
   
-  for(int nhit=0;nhit<getNEcalHits();++nhit){
-    IMPL::SimCalorimeterHitImpl *hit= GetEcalHit(nhit);
-    int xhit=GetEcalHit_ix(hit);
-    int yhit=GetEcalHit_iy(hit);
+  for(int nhit=0;nhit<sa->getNEcalHits();++nhit){
+    IMPL::SimCalorimeterHitImpl *hit= sa->GetEcalHit(nhit);
+    int xhit=sa->GetEcalHit_ix(hit);
+    int yhit=sa->GetEcalHit_iy(hit);
     //   xhit = (xhit>=0?xhit:xhit+1);
     hit_map->Fill(xhit,yhit,hit->getEnergy());
   }
@@ -444,7 +295,7 @@ TH2F *SimAna::EcalHitMap(void){
 }
 
 
-void SimAna::FancyPlot(TH2F *histo,int opt){
+void EcalFancyPlot(TH2F *histo,int opt){
   //
   // Fancy plot of the Calorimeter.
   // Mostly a copy of the code from BaseAna.

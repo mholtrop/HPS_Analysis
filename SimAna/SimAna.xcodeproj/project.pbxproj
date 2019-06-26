@@ -8,7 +8,21 @@
 
 /* Begin PBXBuildFile section */
 		404397221D42A1DC00CA0FCA /* SimAna_LinkDef.h in Sources */ = {isa = PBXBuildFile; fileRef = 40BE712B1CEF912D002ADB25 /* SimAna_LinkDef.h */; };
+		408E9ADE22B190F0004978CC /* EcalCluster.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 408E9ADC22B190F0004978CC /* EcalCluster.cpp */; };
+		408E9ADF22B190F0004978CC /* EcalCluster.h in Headers */ = {isa = PBXBuildFile; fileRef = 408E9ADD22B190F0004978CC /* EcalCluster.h */; };
+		408E9AE222B19C41004978CC /* EcalClustFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 408E9AE022B19C41004978CC /* EcalClustFinder.cpp */; };
+		408E9AE322B19C41004978CC /* EcalClustFinder.h in Headers */ = {isa = PBXBuildFile; fileRef = 408E9AE122B19C41004978CC /* EcalClustFinder.h */; };
+		409074CA22B1789C001B5628 /* TriggerStudy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 409074C822B1789C001B5628 /* TriggerStudy.cpp */; };
+		409074CB22B1789C001B5628 /* TriggerStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = 409074C922B1789C001B5628 /* TriggerStudy.h */; };
+		409074CE22B17A74001B5628 /* TrigHistCol.h in Headers */ = {isa = PBXBuildFile; fileRef = 409074CC22B17A74001B5628 /* TrigHistCol.h */; };
+		409074CF22B17A74001B5628 /* TrigHistCol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 409074CD22B17A74001B5628 /* TrigHistCol.cpp */; };
+		40A0626F22A1C8E100D258F3 /* EHistCol.h in Headers */ = {isa = PBXBuildFile; fileRef = 40A0626D22A1C8E100D258F3 /* EHistCol.h */; };
+		40A0627022A1C8E100D258F3 /* EHistCol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40A0626E22A1C8E100D258F3 /* EHistCol.cpp */; };
 		40BE71241CEF9030002ADB25 /* SimAna.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40BE71231CEF9030002ADB25 /* SimAna.cpp */; };
+		40D54A6F229C3B2400EA51A9 /* SimpleHists.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40D54A6D229C3B2400EA51A9 /* SimpleHists.cpp */; };
+		40D54A70229C3B2400EA51A9 /* SimpleHists.h in Headers */ = {isa = PBXBuildFile; fileRef = 40D54A6E229C3B2400EA51A9 /* SimpleHists.h */; };
+		40D54A76229C7AD500EA51A9 /* ElectronHists.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40D54A74229C7AD500EA51A9 /* ElectronHists.cpp */; };
+		40D54A77229C7AD500EA51A9 /* ElectronHists.h in Headers */ = {isa = PBXBuildFile; fileRef = 40D54A75229C7AD500EA51A9 /* ElectronHists.h */; };
 		40F260911D42AB6E00B8A096 /* SimAna.h in Headers */ = {isa = PBXBuildFile; fileRef = 40BE711F1CEF9030002ADB25 /* SimAna.h */; };
 		40F5E0121D3467A4006D7BC0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40F5E0111D3467A4006D7BC0 /* main.cpp */; };
 		40F5E0161D3467E1006D7BC0 /* libSimAna.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 40BE711C1CEF9030002ADB25 /* libSimAna.dylib */; };
@@ -26,6 +40,10 @@
 				"$(DERIVED_FILE_DIR)/${PRODUCT_MODULE_NAME}Dict.cpp",
 				"$(DERIVED_FILE_DIR)/${PRODUCT_MODULE_NAME}Dict_rdict.pcm",
 			);
+			outputFilesCompilerFlags = (
+				"-Wno-conversion",
+				"",
+			);
 			script = "#\n# Script to create the dictionary for a multi class LinkDef file.\n# The names of the header files are extracted from the LinkDef file.\n# The name of the dictionary files will be based on the PRODUCT_MODULE_NAME\n#\necho \"INPUT_FILE_NAME = ${INPUT_FILE_NAME}\"\necho \"INPUT_FILE_BASE = ${INPUT_FILE_BASE}\"\necho \"PRODUCT_MODULE_NAME = ${PRODUCT_MODULE_NAME}\"\nHEADER_LIST=`cat ${INPUT_FILE_DIR}/${INPUT_FILE_NAME} | gawk '/pragma *link *C++.*class /{a=$5;print gensub(/+;/,\"\",\"g\",a)\".h\" }' `\necho \"HEADER_LIST = ${HEADER_LIST}\"\nHEADER_LIST_FULL=`for i in $HEADER_LIST; do echo ${INPUT_FILE_DIR}/${i}; done`\necho \"HEADER_LIST_FULL = ${HEADER_LIST_FULL}\"\necho ${ROOTSYS}/bin/rootcint -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict.cpp -c -p -I${HEADER_SEARCH_PATHS// / -I} ${HEADER_LIST_FULL} ${INPUT_FILE_DIR}/${INPUT_FILE_NAME}\n\ntest -d ${DERIVED_FILE_DIR} || mkdir -p ${DERIVED_FILE_DIR}\n${ROOTSYS}/bin/rootcint -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict.cpp -c -p -I${HEADER_SEARCH_PATHS// / -I} ${HEADER_LIST_FULL} ${INPUT_FILE_DIR}/${INPUT_FILE_NAME}\n        \n        \n# For ROOT 6 copy the pcm file to the LIB install path.\ntest -d ${DYLIB_INSTALL_NAME_BASE} || mkdir -p ${DYLIB_INSTALL_NAME_BASE}\ntest -d ${BUILT_PRODUCTS_DIR} || mkdir -p ${BUILT_PRODUCTS_DIR}\n# ls ${DERIVED_FILE_DIR}\n# This puts the pcm files in the ${DSTROOT}/${INSTALL_PATH} directory.\necho \"Send dict file from: ${DERIVED_FILES_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm to: ${DYLIB_INSTALL_NAME_BASE}\"\nif test -r ${DERIVED_FILES_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm; then cp -f ${DERIVED_FILES_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ${DYLIB_INSTALL_NAME_BASE}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ; fi\n# cp  ${DERIVED_FILE_DIR}/${DICT_BASE_NAME}Dict_rdict.pcm ${DYLIB_INSTALL_NAME_BASE}\n# This send the pcm files to to build product dir\necho \"Send file rdict.pcm to: \" ${BUILT_PRODUCTS_DIR}\nif test -r ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm; then cp -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ; fi\n";
 		};
 /* End PBXBuildRule section */
@@ -42,11 +60,25 @@
 
 /* Begin PBXFileReference section */
 		4043FFC420D9049800F4D9EE /* libHpsEvent.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libHpsEvent.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		408E9ADC22B190F0004978CC /* EcalCluster.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EcalCluster.cpp; sourceTree = "<group>"; };
+		408E9ADD22B190F0004978CC /* EcalCluster.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EcalCluster.h; sourceTree = "<group>"; };
+		408E9AE022B19C41004978CC /* EcalClustFinder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EcalClustFinder.cpp; sourceTree = "<group>"; };
+		408E9AE122B19C41004978CC /* EcalClustFinder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EcalClustFinder.h; sourceTree = "<group>"; };
+		409074C822B1789C001B5628 /* TriggerStudy.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TriggerStudy.cpp; sourceTree = "<group>"; };
+		409074C922B1789C001B5628 /* TriggerStudy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TriggerStudy.h; sourceTree = "<group>"; };
+		409074CC22B17A74001B5628 /* TrigHistCol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrigHistCol.h; sourceTree = "<group>"; };
+		409074CD22B17A74001B5628 /* TrigHistCol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrigHistCol.cpp; sourceTree = "<group>"; };
+		40A0626D22A1C8E100D258F3 /* EHistCol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EHistCol.h; sourceTree = "<group>"; };
+		40A0626E22A1C8E100D258F3 /* EHistCol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EHistCol.cpp; sourceTree = "<group>"; };
 		40BE711C1CEF9030002ADB25 /* libSimAna.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libSimAna.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		40BE711F1CEF9030002ADB25 /* SimAna.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimAna.h; sourceTree = "<group>"; };
 		40BE71231CEF9030002ADB25 /* SimAna.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SimAna.cpp; sourceTree = "<group>"; };
 		40BE712B1CEF912D002ADB25 /* SimAna_LinkDef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimAna_LinkDef.h; sourceTree = "<group>"; };
 		40BE712C1CEF9279002ADB25 /* SimAna.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SimAna.xcconfig; sourceTree = "<group>"; };
+		40D54A6D229C3B2400EA51A9 /* SimpleHists.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleHists.cpp; sourceTree = "<group>"; };
+		40D54A6E229C3B2400EA51A9 /* SimpleHists.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleHists.h; sourceTree = "<group>"; };
+		40D54A74229C7AD500EA51A9 /* ElectronHists.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ElectronHists.cpp; sourceTree = "<group>"; };
+		40D54A75229C7AD500EA51A9 /* ElectronHists.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ElectronHists.h; sourceTree = "<group>"; };
 		40F5E00F1D3467A4006D7BC0 /* RunSimAna */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = RunSimAna; sourceTree = BUILT_PRODUCTS_DIR; };
 		40F5E0111D3467A4006D7BC0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		40F5E0171D346922006D7BC0 /* TestSimAna.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = TestSimAna.xcconfig; sourceTree = "<group>"; };
@@ -105,6 +137,20 @@
 				40BE712B1CEF912D002ADB25 /* SimAna_LinkDef.h */,
 				40BE711F1CEF9030002ADB25 /* SimAna.h */,
 				40BE71231CEF9030002ADB25 /* SimAna.cpp */,
+				40D54A6E229C3B2400EA51A9 /* SimpleHists.h */,
+				40D54A6D229C3B2400EA51A9 /* SimpleHists.cpp */,
+				40D54A75229C7AD500EA51A9 /* ElectronHists.h */,
+				40D54A74229C7AD500EA51A9 /* ElectronHists.cpp */,
+				40A0626D22A1C8E100D258F3 /* EHistCol.h */,
+				40A0626E22A1C8E100D258F3 /* EHistCol.cpp */,
+				409074C922B1789C001B5628 /* TriggerStudy.h */,
+				409074C822B1789C001B5628 /* TriggerStudy.cpp */,
+				409074CC22B17A74001B5628 /* TrigHistCol.h */,
+				409074CD22B17A74001B5628 /* TrigHistCol.cpp */,
+				408E9ADD22B190F0004978CC /* EcalCluster.h */,
+				408E9ADC22B190F0004978CC /* EcalCluster.cpp */,
+				408E9AE122B19C41004978CC /* EcalClustFinder.h */,
+				408E9AE022B19C41004978CC /* EcalClustFinder.cpp */,
 			);
 			path = SimAna;
 			sourceTree = "<group>";
@@ -133,7 +179,14 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				40D54A77229C7AD500EA51A9 /* ElectronHists.h in Headers */,
+				408E9AE322B19C41004978CC /* EcalClustFinder.h in Headers */,
+				40D54A70229C3B2400EA51A9 /* SimpleHists.h in Headers */,
+				409074CB22B1789C001B5628 /* TriggerStudy.h in Headers */,
+				409074CE22B17A74001B5628 /* TrigHistCol.h in Headers */,
 				40F260911D42AB6E00B8A096 /* SimAna.h in Headers */,
+				408E9ADF22B190F0004978CC /* EcalCluster.h in Headers */,
+				40A0626F22A1C8E100D258F3 /* EHistCol.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,7 +236,7 @@
 		40BE71141CEF9030002ADB25 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = Maurik;
 				TargetAttributes = {
 					40BE711B1CEF9030002ADB25 = {
@@ -196,10 +249,11 @@
 			};
 			buildConfigurationList = 40BE71171CEF9030002ADB25 /* Build configuration list for PBXProject "SimAna" */;
 			compatibilityVersion = "Xcode 6.3";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 40BE71131CEF9030002ADB25;
 			productRefGroup = 40BE711D1CEF9030002ADB25 /* Products */;
@@ -256,8 +310,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				408E9ADE22B190F0004978CC /* EcalCluster.cpp in Sources */,
+				409074CF22B17A74001B5628 /* TrigHistCol.cpp in Sources */,
 				40BE71241CEF9030002ADB25 /* SimAna.cpp in Sources */,
+				40A0627022A1C8E100D258F3 /* EHistCol.cpp in Sources */,
+				40D54A76229C7AD500EA51A9 /* ElectronHists.cpp in Sources */,
 				404397221D42A1DC00CA0FCA /* SimAna_LinkDef.h in Sources */,
+				408E9AE222B19C41004978CC /* EcalClustFinder.cpp in Sources */,
+				409074CA22B1789C001B5628 /* TriggerStudy.cpp in Sources */,
+				40D54A6F229C3B2400EA51A9 /* SimpleHists.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -283,12 +344,64 @@
 		40BE71251CEF9030002ADB25 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
 		};
 		40BE71261CEF9030002ADB25 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 			};
 			name = Release;
 		};
@@ -296,6 +409,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 40BE712C1CEF9279002ADB25 /* SimAna.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Debug;
 		};
@@ -303,6 +417,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 40BE712C1CEF9279002ADB25 /* SimAna.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Release;
 		};
@@ -310,6 +425,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 40F5E0171D346922006D7BC0 /* TestSimAna.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Debug;
 		};
@@ -317,6 +433,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 40F5E0171D346922006D7BC0 /* TestSimAna.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Release;
 		};

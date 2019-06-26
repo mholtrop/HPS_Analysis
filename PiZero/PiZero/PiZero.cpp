@@ -259,7 +259,7 @@ Bool_t PiZero::Process(Long64_t entry)
   
   vector<HpsParticle *> photons;
   for(int np=0;np<n_particles;++np){
-    HpsParticle *part = GetParticle(np);   //event->getParticle(HpsParticle::FINAL_STATE_PARTICLE,np);
+    HpsParticle *part = GetParticle(HpsParticle::FINAL_STATE_PARTICLE,np);   //event->getParticle(HpsParticle::FINAL_STATE_PARTICLE,np);
     
     if( part->getCharge() == 0) ++n_neutrals;
 

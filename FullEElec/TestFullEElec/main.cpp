@@ -14,11 +14,16 @@ int main(int argc, const char * argv[]) {
   std::cout << "TestFullEElec Code start...\n";
   
   TChain *ch = new TChain("HPS_Event");
-  ch->Add("/data/HPS/engrun2015/pass6/dst/hps_*.root");
+  if(argc<2)
+    ch->Add("/data/HPS/data/MC/physrun2016/moller/tmp.root");
+  else
+    ch->Add(argv[1]);
+  
   cout << "Number of events = " << ch->GetEntries() << endl;
   
   FullEElec *pz=new FullEElec(ch);
   pz->SlaveBegin((TTree *)pz);
+  pz->fCounter_Freq=1;
   pz->Run();
   
   return 0;

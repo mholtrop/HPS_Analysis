@@ -24,10 +24,11 @@
 
 #include <iostream>
 #include "BaseAna.h"
+#include "HpsParticle.h"
 
 ClassImp(BaseAna);
 
-BaseAna::BaseAna(TTree *tree): fChain(NULL),fDebug(kDebug_Info+kDebug_Warning+kDebug_Error), is_process(false), event(NULL), b_event(NULL){
+BaseAna::BaseAna(TTree *tree,string out_file_name): fChain(NULL),fDebug(kDebug_Info+kDebug_Warning+kDebug_Error), is_process(false), event(NULL), b_event(NULL),output_file_name(out_file_name),b_field(0){
   // Constructor. If tree is passed, initialize with that tree.
 
   if(tree){
@@ -48,8 +49,6 @@ BaseAna::BaseAna(TTree *tree): fChain(NULL),fDebug(kDebug_Info+kDebug_Warning+kD
 //  }else{
 //    if(fDebug & kDebug_Info) cout << "Running outside of PROOF\n";
 //  }
-
-  output_file_name = "BaseAna_out.root";
 
 }
 
@@ -224,13 +223,13 @@ Bool_t BaseAna::Process(Long64_t entry)
   if(  stat <= 0 ){
     if(fDebug & kDebug_Error){
       cout << "GetEntry("<< entry << ") returned with status "<<  stat << endl;
-      printf("i: %9ld  event: %9d  clust: %2d  track: %2d \n", evt_count, event->getEventNumber(), event->getNumberOfEcalClusters(), event->getNumberOfTracks());
+      printf("i: %9ld  event: %9d  clust: %2d  track: %2d \n", evt_count, GetEventNumber(), GetNumberOfEcalClusters(), GetNumberOfTracks());
     }
     Abort("Bad event");
     return false;
   }
-  if( (evt_count++ % 1000 ) == 0) {
-    printf("i: %9ld  event: %9d  clust: %2d  track: %2d  tree: %2d\n", evt_count, event->getEventNumber(), event->getNumberOfEcalClusters(), event->getNumberOfTracks(),fChain->GetTreeNumber());
+  if( (evt_count++ % fCounter_Freq ) == 0) {
+    printf("i: %9ld  event: %9d  clust: %2d  track: %2d  tree: %2d\n", evt_count, GetEventNumber(), GetNumberOfEcalClusters(), GetNumberOfTracks(),fChain->GetTreeNumber());
   }
   return(kTRUE);
 }
@@ -238,7 +237,9 @@ Bool_t BaseAna::Process(Long64_t entry)
 
 Int_t BaseAna::Next(void){
   // Get the next event and process it.
-  return(Process( current_event + 1)); // Note that current_event is updated in GetEntry(), so ++current_event is NOT correct!
+  int stat=Process( current_event); // Note that current_event is updated in GetEntry(), so ++current_event is NOT correct!
+  current_event++;
+  return(stat);
 }
 
 void BaseAna::SlaveTerminate()
@@ -297,9 +298,9 @@ void BaseAna::Terminate()
   
 }
 
-int BaseAna::Run(int nevent){
+long BaseAna::Run(int nevent){
   // Run through nevents, if nevent <=0 then run until the end of the chain.
-  int max_event = fChain->GetEntries();
+  long max_event = fChain->GetEntries();
   if( nevent>0 && nevent+current_event < max_event ) max_event = nevent;
   
   int stat=1;
@@ -309,8 +310,54 @@ int BaseAna::Run(int nevent){
   return(current_event);
 }
 
-void BaseAna::Print(Option_t *option) const{
+void BaseAna::PrintParticle(const HpsParticle *part,int i) const{
+  if(part){
+    // Identify which cluster is associated with this particle.
+    int cluster_num=-2;
+    TRefArray *cl_ref = part->getClusters();
+    if(cl_ref->GetEntries()>0){
+      EcalCluster *p_clus = static_cast<EcalCluster *>(cl_ref->At(0));
+      for(int nc=0;nc<GetNumberOfEcalClusters();++nc){
+        if( GetEcalCluster(nc) == p_clus){
+          cluster_num = nc;
+        }
+      }
+    }
+    // Identify which track is associated with this particle.
+    int track_num=-1;
+    TRefArray *tr_ref = part->getTracks();
+    if(tr_ref->GetEntries()>0){
+      SvtTrack *p_track = static_cast<SvtTrack *>(tr_ref->At(0));
+      if( part->getType() <= 32){
+        for(int nt=0;nt<GetNumberOfTracks();++nt){
+          if( GetTrack(nt) == p_track){
+            track_num = nt;
+            break;
+          }
+        }
+      }else{
+        for(int ng=0;ng< GetNumberOfGblTracks();++ng){
+          if(GetGblTrack(ng) == p_track){
+            track_num = 100+ng;
+            break;
+          }
+        }
+      }
+    }
+    vector<double> mom=part->getMomentum();
+    printf("%2d: PID: %4d (%8.1f) Charge: %2d Type: %2d -- E= %6.4f P=(%5.2f,%5.2f,%5.2f) Cluster: %d  Track:%3d\n",
+           i,part->getPDG(),part->getGoodnessOfPID(),part->getCharge(),part->getType(),
+           part->getEnergy(),mom[0],mom[1],mom[2],cluster_num+1,track_num);
+    std::vector<float> covmat  = part->getCovariantMatrix();
+    printf("    CovMat: ");
+    for(int i=0;i<10;++i) printf("%5.2f ",covmat[i]);
+    printf("\n");
+  }
+}
+
+void BaseAna::Print(Option_t *options) const{
   
+  string opts(options);
   char evt_time[71];
   time_t evt_time_n;
   long evt_time_frac;
@@ -318,82 +365,111 @@ void BaseAna::Print(Option_t *option) const{
     cout <<  "Event is NULL \n";
     return;
   }
-  long evt_time_raw = event->getEventTime();
+  
+  long evt_time_raw = GetEventTime();
   if( evt_time_raw > 1000000000 ){
     evt_time_n = evt_time_raw/1000000000;
     evt_time_frac =evt_time_raw%1000000000;
   }else{
     evt_time_n = 0;
-    evt_time_raw = event->getEventTime();
+    evt_time_raw = GetEventTime();
     evt_time_frac=0;
   }
-  
+  bool do_all = opts.find("all")!=std::string::npos;
+
   struct tm *ti = localtime(&evt_time_n);
   strftime(evt_time,49,"%c",ti);
   
-  printf("Run: %6d  Event: %7d  time: %ld = %s %ld evt_in_chain: %ld\n",event->getRunNumber(),event->getEventNumber(),evt_time_n,evt_time,evt_time_frac,current_event);
-  printf("Trigger");
-  if( event->isPulserTrigger() )printf(" pulser ");
-  if( event->isSingle0Trigger())printf(" single0 ");
-  if( event->isSingle1Trigger())printf(" single1 ");
-  if( event->isPair0Trigger() )printf(" pair0 ");
-  if( event->isPair1Trigger() )printf(" pair1 ");
-  printf("\n");
-  printf("SVT: ");
-  if(event->isSvtBiasOn() && event->isSvtClosed() && event->isSvtLatencyGood()) printf(" OK \n");
-  else printf("NOT OK: Bias %1d Closed: %1d Latency: %1d \n",event->isSvtBiasOn(),event->isSvtClosed(),event->isSvtLatencyGood());
-  printf("N_Ecal: %3d  N_SVT: %3d N_Track: %3d \n",event->getNumberOfEcalClusters(),event->getNumberOfSvtHits(),event->getNumberOfTracks());
-  printf("N_Part: %3d  UC_V0: %3d BC_V0: %3d  TC_V0: %3d\n",
-         event->getNumberOfParticles(HpsParticle::FINAL_STATE_PARTICLE),
-         event->getNumberOfParticles(HpsParticle::UC_V0_CANDIDATE),
-         event->getNumberOfParticles(HpsParticle::BSC_V0_CANDIDATE),
-         event->getNumberOfParticles(HpsParticle::TC_V0_CANDIDATE));
-  if(strcmp(option,"all")==0){
-    cout << "Particles: \n";
-    for(int i=0; i<event->getNumberOfParticles(HpsParticle::FINAL_STATE_PARTICLE); ++i){
-      HpsParticle *part= event->getParticle(HpsParticle::FINAL_STATE_PARTICLE, i);
-      if(part){
-        // Identify which cluster is associated with this particle.
-        int cluster_num=-2;
-        TRefArray *cl_ref = part->getClusters();
-        if(cl_ref->GetEntries()>1) cout << "More than one cluster for this particle!";
-        if(cl_ref->GetEntries()>0){
-          EcalCluster *p_clus = (EcalCluster *)cl_ref->At(0);
-          for(int nc=0;nc<event->getNumberOfEcalClusters();++nc){
-            if( event->getEcalCluster(nc) == p_clus){
-              cluster_num = nc;
-            }
+  // Header is always printed
+  printf("Run: %6d  Event: %7d  time: %ld = %s %ld evt_in_chain: %ld\n",GetRunNumber(),GetEventNumber(),evt_time_n,evt_time,evt_time_frac,current_event);
+  
+  if(do_all || (opts.find("trig")!=std::string::npos)){
+    printf("Trigger");
+    if( IsPulserTrigger() )printf(" pulser ");
+    if( IsSingle0Trigger())printf(" single0 ");
+    if( IsSingle1Trigger())printf(" single1 ");
+    if( IsPair0Trigger() )printf(" pair0 ");
+    if( IsPair1Trigger() )printf(" pair1 ");
+    printf("\n");
+  
+    printf("SVT status: ");
+    if(IsSvtBiasOn() && IsSvtClosed() && IsSvtLatencyGood()) printf(" OK \n");
+    else printf("NOT OK: Bias %1d Closed: %1d Latency: %1d \n",IsSvtBiasOn(),IsSvtClosed(),IsSvtLatencyGood());
+    printf("N_Ecal:%3d  N_SVT:%3d N_Track:%3d \n",GetNumberOfEcalClusters(),GetNumberOfSvtHits(),GetNumberOfTracks());
+    printf("N_Part:%2d  UC_V0:%2d UC_VC:%2d BC_V0:%2d  TC_V0:%2d  OE:%2d\n",
+           GetNumberOfParticles(HpsParticle::FINAL_STATE_PARTICLE),
+           GetNumberOfParticles(HpsParticle::UC_V0_CANDIDATE),
+           GetNumberOfParticles(HpsParticle::UC_VC_CANDIDATE),
+           GetNumberOfParticles(HpsParticle::BSC_V0_CANDIDATE),
+           GetNumberOfParticles(HpsParticle::TC_V0_CANDIDATE),
+           GetNumberOfParticles(HpsParticle::OTHER_ELECTRONS));
+  }
+  
+  if(do_all || (opts.find("vert")!=std::string::npos)){
+    printf("Constrained Particles:");
+    for(auto particle_type: {HpsParticle::UC_V0_CANDIDATE,HpsParticle::UC_VC_CANDIDATE,HpsParticle::BSC_V0_CANDIDATE,HpsParticle::TC_V0_CANDIDATE}){
+      if(GetNumberOfParticles(particle_type)){
+        if(particle_type == HpsParticle::UC_V0_CANDIDATE)       cout << "Unconstrained Vertex: ";
+        else if(particle_type == HpsParticle::UC_VC_CANDIDATE)  cout << "Unconst same side Vx: ";
+        else if(particle_type == HpsParticle::BSC_V0_CANDIDATE) cout << "Beamspot Constrained: ";
+        else if(particle_type == HpsParticle::TC_V0_CANDIDATE)  cout << "Target Constrained:   ";
+      }
+      
+      for(int i=0; i<GetNumberOfParticles(particle_type); ++i){
+        HpsParticle *part= GetParticle(particle_type, i);
+        if(part){
+          vector<double> vert= part->getVertexPosition();
+          printf("Mass: %6.4f  Energy: %6.3f  Vertex:(%6.3f,%6.3f,%6.3f) V.chi2: %8.2f \n",
+                 part->getMass(),part->getEnergy(),vert[0],vert[1],vert[2],part->getVertexFitChi2());
+          TRefArray *daughter_refs = part->getParticles();
+          for(int j=0; j<daughter_refs->GetEntries(); ++j){
+            PrintParticle(static_cast<HpsParticle *>(daughter_refs->At(j)),j);
           }
         }
-        // Identify which track is associated with this particle.
-        int track_num=-1;
-        TRefArray *tr_ref = part->getTracks();
-        if(tr_ref->GetEntries()>1) cout << "More than one track for this particle!";
-        if(tr_ref->GetEntries()>0){
-          SvtTrack *p_track = (SvtTrack *)tr_ref->At(0);
-          if( part->getType() <= 32){
-            for(int nt=0;nt<event->getNumberOfTracks();++nt){
-              if( event->getTrack(nt) == p_track){
-                track_num = nt;
-                break;
-              }
-            }
-          }else{
-            for(int ng=0;ng<event->getNumberOfGblTracks();++ng){
-              if(event->getGblTrack(ng) == p_track){
-                track_num = 100+ng;
-                break;
-              }
-            }
-          }
-        }
-        vector<double> mom=part->getMomentum();
-        printf("%2d: PID: %4d (%5.1f) Type: %2d -- E= %6.4f P=(%5.2f,%5.2f,%5.2f) Cluster: %d  Track:%3d\n",i,part->getPDG(),part->getGoodnessOfPID(),part->getType(),part->getEnergy(),mom[0],mom[1],mom[2],cluster_num+1,track_num);
       }
     }
+  }
+  
+  
+  if(do_all || (opts.find("part")!=std::string::npos)){
+    for(auto particle_type: {HpsParticle::FINAL_STATE_PARTICLE,HpsParticle::OTHER_ELECTRONS}){
+      if(GetNumberOfParticles(particle_type)){
+        if(particle_type == HpsParticle::FINAL_STATE_PARTICLE) cout << "Final State Particles: \n";
+        else if(particle_type == HpsParticle::OTHER_ELECTRONS) cout << "Other Electrons: \n";
+      }
+      
+      for(int i=0; i<GetNumberOfParticles(particle_type); ++i){
+        HpsParticle *part= GetParticle(particle_type, i);
+        PrintParticle(part,i);
+      }
+    }
+  }
+  
+  if(do_all || (opts.find("track")!=std::string::npos)){
+    cout << "Tracks: \n";
+    for(int nt=0;nt< GetNumberOfTracks();++nt){
+      SvtTrack *trk = GetTrack(nt);
+      vector<double> pos=trk->getPositionAtEcal();
+      vector<double> mom=trk->getMomentum(b_field);
+      printf("%2d: Ch:%2d Type: %2d X2: %6.2f P:(%5.2f,%5.2f,%5.2f) L:(%5.2f,%5.2f,%5.2f) Time: %5.3f \n",nt,trk->getCharge(),trk->getType(),trk->getChi2(),mom[0],mom[1],mom[2],pos[0],pos[1],pos[2],trk->getTrackTime());
+      printf("    CovMat: ");
+      vector<float> covmat = trk->getCovariantMatrix();
+      for(int i=0;i<15;++i) printf("%5.2f ",covmat[i]);
+      printf("\n");
+    }
+    cout << "GBL Tracks: \n";
+    for(int ng=0;ng<GetNumberOfGblTracks();++ng){
+      GblTrack *gtrk = GetGblTrack(ng);
+      vector<double> pos=gtrk->getPositionAtEcal();
+      vector<double> mom=gtrk->getMomentum(b_field);
+      printf("%2d: Ch:%2d Type: %2d X2: %6.2f P:(%5.2f,%5.2f,%5.2f) L:(%5.2f,%5.2f,%5.2f) Time: %5.3f \n",ng,gtrk->getCharge(),gtrk->getType(),gtrk->getChi2(),mom[0],mom[1],mom[2],pos[0],pos[1],pos[2],gtrk->getTrackTime());
+    }
+  }
+
+  if(do_all || (opts.find("ecal")!=std::string::npos)){
     cout << "Clusters: \n";
-    for(int nc=0;nc<event->getNumberOfEcalClusters();++nc){
-      EcalCluster *clus = event->getEcalCluster(nc);
+    for(int nc=0;nc<GetNumberOfEcalClusters();++nc){
+      EcalCluster *clus = GetEcalCluster(nc);
       vector<double> pos=clus->getPosition();
       EcalHit *seed=clus->getSeed();
       printf("%2d: Energy: %5.2f L:(%7.2f,%6.2f,%6.1f) T: %6.2f Seed: (%3d,%3d) hits:",nc+1,clus->getEnergy(),pos[0],pos[1],pos[2],clus->getClusterTime(),TrXhit(seed->getXCrystalIndex()),seed->getYCrystalIndex());
@@ -405,35 +481,24 @@ void BaseAna::Print(Option_t *option) const{
       printf("\n");
     }
     cout << "Hits: \n";
-    for(int nh=0;nh<event->getNumberOfEcalHits();++nh){
-      EcalHit *hit=event->getEcalHit(nh);
+    for(int nh=0;nh<GetNumberOfEcalHits();++nh){
+      EcalHit *hit=GetEcalHit(nh);
       printf("%2d: E:%7.2f  T:%7.2f  (%3d,%3d) \n",nh,hit->getEnergy(),hit->getTime(),TrXhit(hit->getXCrystalIndex()),hit->getYCrystalIndex());
     }
-    cout << "Tracks: \n";
-    for(int nt=0;nt<event->getNumberOfTracks();++nt){
-      SvtTrack *trk = event->getTrack(nt);
-      vector<double> pos=trk->getPositionAtEcal();
-      vector<double> mom=trk->getMomentum();
-      printf("%2d: Ch:%2d Type: %2d X2: %6.2f P:(%5.2f,%5.2f,%5.2f) L:(%5.2f,%5.2f,%5.2f) T: %5.3f \n",nt,trk->getCharge(),trk->getType(),trk->getChi2(),mom[0],mom[1],mom[2],pos[0],pos[1],pos[2],trk->getTrackTime());
-    }
-    cout << "GBL Tracks: \n";
-    for(int ng=0;ng<event->getNumberOfGblTracks();++ng){
-      GblTrack *gtrk = event->getGblTrack(ng);
-      vector<double> pos=gtrk->getPositionAtEcal();
-      vector<double> mom=gtrk->getMomentum();
-      printf("%2d: Ch:%2d Type: %2d X2: %6.2f P:(%5.2f,%5.2f,%5.2f) L:(%5.2f,%5.2f,%5.2f) T: %5.3f \n",ng,gtrk->getCharge(),gtrk->getType(),gtrk->getChi2(),mom[0],mom[1],mom[2],pos[0],pos[1],pos[2],gtrk->getTrackTime());
-    }
-    
+  }
+
+  if(do_all || (opts.find("svt")!=std::string::npos)){
+    cout << "SVT -- Implement me!\n";
   }
 }
 
-HpsParticle    *BaseAna::GetParticle(int n){
+HpsParticle    *BaseAna::GetFSParticle(int n){
   // Returns the n-th FINAL_STATE_PARTICLE from the current event.
-  if(n >= event->getNumberOfParticles(HpsParticle::FINAL_STATE_PARTICLE)){
+  if(n >= GetNumberOfParticles(HpsParticle::FINAL_STATE_PARTICLE)){
     cout << "Asking for particle that is not in list. ";
     return(nullptr);
   }else{
-    return event->getParticle(HpsParticle::FINAL_STATE_PARTICLE,n);
+    return GetParticle(HpsParticle::FINAL_STATE_PARTICLE,n);
   }
 }
 
@@ -443,8 +508,8 @@ double BaseAna::GetAbsMomentum(HpsParticle *part){
   return( sqrt( mom[0]*mom[0] + mom[1]*mom[1] + mom[2]*mom[2] ));
 }
 
-double BaseAna::GetAbsMomentum(int n){
-  HpsParticle *part = GetParticle(n);
+double BaseAna::GetFSAbsMomentum(int n){
+  HpsParticle *part = GetFSParticle(n);
   if(part) return GetAbsMomentum(part);
   else return -999;
 }
@@ -477,8 +542,8 @@ TH2F *BaseAna::EcalHitMap(void){
     hit_map->Reset();
   }
   
-  for(int nhit=0;nhit<event->getNumberOfEcalHits();++nhit){
-    EcalHit *hit=event->getEcalHit(nhit);
+  for(int nhit=0;nhit<GetNumberOfEcalHits();++nhit){
+    EcalHit *hit= GetEcalHit(nhit);
     int xhit=hit->getXCrystalIndex();
     int yhit=hit->getYCrystalIndex();
 //    xhit = (xhit>=0?xhit:xhit+1);
@@ -503,14 +568,14 @@ TH2F *BaseAna::ClusterMap(int n_cl){
     cluster_map->Reset();
   }
 
-  if(n_cl > event->getNumberOfEcalClusters()) n_cl=0;
+  if(n_cl > GetNumberOfEcalClusters()) n_cl=0;
   string name("Cluster Map");
   if(n_cl>0) name.append(" ").append(to_string(n_cl));
   cluster_map->SetName(name.data());
   
-  for(int nc=(n_cl==0?0:n_cl-1);nc<(n_cl!=0?n_cl:event->getNumberOfEcalClusters());++nc){
+  for(int nc=(n_cl==0?0:n_cl-1);nc<(n_cl!=0?n_cl:GetNumberOfEcalClusters());++nc){
     if(gDebug ) cout << "Histo for ECAL Cluster" << nc << endl;
-    EcalCluster *clus=event->getEcalCluster(nc);
+    EcalCluster *clus= GetEcalCluster(nc);
     // EcalHit *seed = clus->getSeed();
     TRefArray *r_hits = clus->getEcalHits();
     for(int nh=0;nh<r_hits->GetEntries();++nh){

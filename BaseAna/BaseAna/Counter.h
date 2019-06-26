@@ -7,7 +7,11 @@
 #ifndef __Counter__  
 #define __Counter__
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wconversion"
 #include "TROOT.h"
+#pragma clang diagnostic pop
+
 #include <iostream>
 #include <iomanip>
 

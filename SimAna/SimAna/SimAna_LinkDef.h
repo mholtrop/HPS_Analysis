@@ -13,5 +13,19 @@
 #pragma link C++ nestedclasses;
 
 #pragma link C++ class SimAna+;
+#pragma link C++ class SimpleHists+;
+#pragma link C++ class EHistCol+;
+#pragma link C++ class ElectronHists+;
+#pragma link C++ class TrigHistCol+;
+#pragma link C++ class TriggerStudy+;
+#pragma link C++ class EcalCluster+;
+#pragma link C++ class EcalClustFinder+;
+
+
+
+
+#pragma link C++ function EcalHitMap;
+#pragma link C++ function EcalFancyPlot;
+
 
 #endif

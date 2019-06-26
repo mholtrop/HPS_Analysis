@@ -11,7 +11,8 @@ include_directories(${BaseAna_INCLUDE_DIRS})
 SET(PROJECT_HEADER_FILES FullEElec.h FullEE_Histos.h)
 SET(PROJECT_HEADER_LINKDEF_FILES FullEElec_LinkDef.h)
 SET(PROJECT_CXX_FILES  FullEElec.cpp FullEE_Histos.cpp)
-SET(PROJECT_EXTRA_LIBS BaseAna ${HPS_DST_LIB_DIR}/libHpsEvent${CMAKE_SHARED_LIBRARY_SUFFIX} )
+#SET(PROJECT_EXTRA_LIBS BaseAna ${HPS_DST_LIB_DIR}/libHpsEvent${CMAKE_SHARED_LIBRARY_SUFFIX} )
+SET(PROJECT_EXTRA_LIBS BaseAna  )
 
 #--- Below this line, you should not need to specify project specific things.
 

@@ -47,7 +47,7 @@ void FEESelector::Set_Engineering2015(void){
 /// \return{  True if particle is considered an FEE, false otherwise }
 ///
 bool FEESelector::Select(int np){
-  HpsParticle *part=base->GetParticle(np);
+  HpsParticle *part=base->GetFSParticle(np);
   return(Select(part));
 }
 

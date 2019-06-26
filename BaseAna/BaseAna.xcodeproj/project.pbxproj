@@ -16,7 +16,8 @@
 		40B565481D41346800151E1D /* BaseAna_LinkDef.h in Headers */ = {isa = PBXBuildFile; fileRef = 40BE712B1CEF912D002ADB25 /* BaseAna_LinkDef.h */; };
 		40BE71201CEF9030002ADB25 /* BaseAna.h in Headers */ = {isa = PBXBuildFile; fileRef = 40BE711F1CEF9030002ADB25 /* BaseAna.h */; };
 		40BE71241CEF9030002ADB25 /* BaseAna.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40BE71231CEF9030002ADB25 /* BaseAna.cpp */; };
-		40DA52D821C490E40035D296 /* libevent.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 40DA52D721C490E40035D296 /* libevent.dylib */; };
+		40FB9B71220FAFA800DAF07D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40FB9B70220FAFA800DAF07D /* main.cpp */; };
+		40FB9B75220FB14400DAF07D /* libBaseAna.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 40BE711C1CEF9030002ADB25 /* libBaseAna.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -30,6 +31,10 @@
 			outputFiles = (
 				"$(DERIVED_FILE_DIR)/${PRODUCT_MODULE_NAME}Dict_rdict.pcm",
 				"$(DERIVED_FILE_DIR)/${PRODUCT_MODULE_NAME}Dict.cpp",
+			);
+			outputFilesCompilerFlags = (
+				"",
+				"-Wno-conversion",
 			);
 			script = "#\n# Script to create the dictionary for a multi class LinkDef file.\n# The names of the header files are extracted from the LinkDef file.\n# The name of the dictionary files will be based on the PRODUCT_MODULE_NAME\n#\necho \"INPUT_FILE_NAME = ${INPUT_FILE_NAME}\"\necho \"INPUT_FILE_BASE = ${INPUT_FILE_BASE}\"\necho \"PRODUCT_MODULE_NAME = ${PRODUCT_MODULE_NAME}\"\nHEADER_LIST=`cat ${INPUT_FILE_DIR}/${INPUT_FILE_NAME} | gawk '/pragma *link *C++.*class /{a=$5;print gensub(/+;/,\"\",\"g\",a)\".h\" }' `\necho \"HEADER_LIST = ${HEADER_LIST}\"\nHEADER_LIST_FULL=`for i in $HEADER_LIST; do echo ${INPUT_FILE_DIR}/${i}; done`\necho \"HEADER_LIST_FULL = ${HEADER_LIST_FULL}\"\necho ${ROOTSYS}/bin/rootcint -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict.cpp -c -p -I${HEADER_SEARCH_PATHS// / -I} ${HEADER_LIST_FULL} ${INPUT_FILE_DIR}/${INPUT_FILE_NAME}\n\n${ROOTSYS}/bin/rootcint -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict.cpp -c -p -I${HEADER_SEARCH_PATHS// / -I} ${HEADER_LIST_FULL} ${INPUT_FILE_DIR}/${INPUT_FILE_NAME}\n\n\n# For ROOT 6 copy the pcm file to the LIB install path.\ntest -d ${DYLIB_INSTALL_NAME_BASE} || mkdir -p ${DYLIB_INSTALL_NAME_BASE}\ntest -d ${BUILT_PRODUCTS_DIR} || mkdir -p ${BUILT_PRODUCTS_DIR}\n# ls ${DERIVED_FILE_DIR}\n# This puts the pcm files in the ${DSTROOT}/${INSTALL_PATH} directory.\necho \"Send dict file to: \" ${DYLIB_INSTALL_NAME_BASE}\nif test -r ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm; then cp -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ${DYLIB_INSTALL_NAME_BASE}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ; fi\n# cp  ${DERIVED_FILE_DIR}/${DICT_BASE_NAME}Dict_rdict.pcm ${DYLIB_INSTALL_NAME_BASE}\n# This send the pcm files to to build product dir\necho \"Send file rdict.pcm to: \" ${BUILT_PRODUCTS_DIR}\nif test -r ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm; then cp -f ${DERIVED_FILE_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}Dict_rdict.pcm ; fi\n";
 		};
@@ -45,6 +50,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		40FB9B6C220FAFA800DAF07D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +73,8 @@
 		40BE712B1CEF912D002ADB25 /* BaseAna_LinkDef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseAna_LinkDef.h; sourceTree = "<group>"; };
 		40BE712C1CEF9279002ADB25 /* BaseAna.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BaseAna.xcconfig; sourceTree = "<group>"; };
 		40DA52D721C490E40035D296 /* libevent.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libevent.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		40FB9B6E220FAFA800DAF07D /* libTest_BaseAna */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libTest_BaseAna; sourceTree = BUILT_PRODUCTS_DIR; };
+		40FB9B70220FAFA800DAF07D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,8 +82,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				40DA52D821C490E40035D296 /* libevent.dylib in Frameworks */,
 				401A55381D0A0F450017AE2C /* libHpsEvent.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FB9B6B220FAFA800DAF07D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				40FB9B75220FB14400DAF07D /* libBaseAna.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +103,7 @@
 				401A55371D0A0F450017AE2C /* libHpsEvent.dylib */,
 				40BE712A1CEF90A5002ADB25 /* Config */,
 				40BE711E1CEF9030002ADB25 /* BaseAna */,
+				40FB9B6F220FAFA800DAF07D /* Test_BaseAna */,
 				40BE711D1CEF9030002ADB25 /* Products */,
 				40DA52D621C490E40035D296 /* Frameworks */,
 			);
@@ -89,6 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				40BE711C1CEF9030002ADB25 /* libBaseAna.dylib */,
+				40FB9B6E220FAFA800DAF07D /* libTest_BaseAna */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -121,6 +146,14 @@
 				40DA52D721C490E40035D296 /* libevent.dylib */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		40FB9B6F220FAFA800DAF07D /* Test_BaseAna */ = {
+			isa = PBXGroup;
+			children = (
+				40FB9B70220FAFA800DAF07D /* main.cpp */,
+			);
+			path = Test_BaseAna;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -160,17 +193,37 @@
 			productReference = 40BE711C1CEF9030002ADB25 /* libBaseAna.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
+		40FB9B6D220FAFA800DAF07D /* Test_BaseAna */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 40FB9B74220FAFA800DAF07D /* Build configuration list for PBXNativeTarget "Test_BaseAna" */;
+			buildPhases = (
+				40FB9B6A220FAFA800DAF07D /* Sources */,
+				40FB9B6B220FAFA800DAF07D /* Frameworks */,
+				40FB9B6C220FAFA800DAF07D /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Test_BaseAna;
+			productName = Test_BaseAna;
+			productReference = 40FB9B6E220FAFA800DAF07D /* libTest_BaseAna */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		40BE71141CEF9030002ADB25 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = Maurik;
 				TargetAttributes = {
 					40BE711B1CEF9030002ADB25 = {
 						CreatedOnToolsVersion = 7.3.1;
+					};
+					40FB9B6D220FAFA800DAF07D = {
+						CreatedOnToolsVersion = 10.1;
 					};
 				};
 			};
@@ -187,6 +240,7 @@
 			projectRoot = "";
 			targets = (
 				40BE711B1CEF9030002ADB25 /* BaseAna */,
+				40FB9B6D220FAFA800DAF07D /* Test_BaseAna */,
 			);
 		};
 /* End PBXProject section */
@@ -224,18 +278,78 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		40FB9B6A220FAFA800DAF07D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				40FB9B71220FAFA800DAF07D /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		40BE71251CEF9030002ADB25 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
 		};
 		40BE71261CEF9030002ADB25 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 			};
 			name = Release;
 		};
@@ -243,6 +357,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 40BE712C1CEF9279002ADB25 /* BaseAna.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 			};
 			name = Debug;
 		};
@@ -250,6 +365,124 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 40BE712C1CEF9279002ADB25 /* BaseAna.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+			};
+			name = Release;
+		};
+		40FB9B72220FAFA800DAF07D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 40BE712C1CEF9279002ADB25 /* BaseAna.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		40FB9B73220FAFA800DAF07D /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 40BE712C1CEF9279002ADB25 /* BaseAna.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -270,6 +503,15 @@
 			buildConfigurations = (
 				40BE71281CEF9030002ADB25 /* Debug */,
 				40BE71291CEF9030002ADB25 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		40FB9B74220FAFA800DAF07D /* Build configuration list for PBXNativeTarget "Test_BaseAna" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40FB9B72220FAFA800DAF07D /* Debug */,
+				40FB9B73220FAFA800DAF07D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
