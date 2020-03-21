@@ -218,7 +218,7 @@ Bool_t BaseAna::Process(Long64_t entry)
   //
   // The return value is currently not used.
   
-  cout << "Process: " << entry << " Tree: " << fChain->GetTreeNumber() << endl;
+  if(fDebug & kDebug_L2) cout << "Process: " << entry << " Tree: " << fChain->GetTreeNumber() << endl;
   int stat =GetEntry(entry);
   if(  stat <= 0 ){
     if(fDebug & kDebug_Error){

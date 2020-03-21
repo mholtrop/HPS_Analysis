@@ -38,8 +38,19 @@
 		};
 /* End PBXBuildRule section */
 
+/* Begin PBXContainerItemProxy section */
+		406B31FA23A528A700CB400B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 406B31F623A528A700CB400B /* bump-hunter.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 406B31EC23A5289C00CB400B;
+			remoteInfo = "bump-hunter";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		401A55371D0A0F450017AE2C /* libHpsEvent.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libHpsEvent.dylib; path = ../Release/libHpsEvent.dylib; sourceTree = "<group>"; };
+		406B31F623A528A700CB400B /* bump-hunter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "bump-hunter.xcodeproj"; path = "../bump-hunter/bump-hunter.xcodeproj"; sourceTree = "<group>"; };
 		40BE711C1CEF9030002ADB25 /* libFullEElec.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libFullEElec.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		40BE711F1CEF9030002ADB25 /* FullEElec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FullEElec.h; sourceTree = "<group>"; };
 		40BE71231CEF9030002ADB25 /* FullEElec.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FullEElec.cpp; sourceTree = "<group>"; };
@@ -74,9 +85,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		406B31F723A528A700CB400B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				406B31FB23A528A700CB400B /* bump-hunter */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		40BE71131CEF9030002ADB25 = {
 			isa = PBXGroup;
 			children = (
+				406B31F623A528A700CB400B /* bump-hunter.xcodeproj */,
 				40D9686E1D0A429A00B48D9F /* libBaseAna.dylib */,
 				401A55371D0A0F450017AE2C /* libHpsEvent.dylib */,
 				40BE712A1CEF90A5002ADB25 /* Config */,
@@ -197,11 +217,18 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 40BE71131CEF9030002ADB25;
 			productRefGroup = 40BE711D1CEF9030002ADB25 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 406B31F723A528A700CB400B /* Products */;
+					ProjectRef = 406B31F623A528A700CB400B /* bump-hunter.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				40BE711B1CEF9030002ADB25 /* FullEElec */,
@@ -209,6 +236,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		406B31FB23A528A700CB400B /* bump-hunter */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = "bump-hunter";
+			remoteRef = 406B31FA23A528A700CB400B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		40D3FFED21C3009E00381AF5 /* ShellScript */ = {

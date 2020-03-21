@@ -50,7 +50,7 @@ public:
   Int_t   fChain_type;    //!  Controls the behavior of GetEntry: 1=TTree, 2= TChain, 3=Proof
   Int_t   fCurrent;       //! Current Tree number is a TChain
   Int_t   fDebug;
-  int     fCounter_Freq=1;
+  int     fCounter_Freq= INT_MAX;
   bool    is_process;
 
   HpsEvent *event;   // Stores the HpsEvent

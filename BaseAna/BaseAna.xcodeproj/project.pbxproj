@@ -229,7 +229,7 @@
 			};
 			buildConfigurationList = 40BE71171CEF9030002ADB25 /* Build configuration list for PBXProject "BaseAna" */;
 			compatibilityVersion = "Xcode 9.3";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
